@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVEP - El Lápiz de Oro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="view-login" class="view-container active glass-auth-screen">
+        <div class="glass-card">
+            
+            <div class="role-selection-container">
+                <p class="role-title">SELECCIONA TU ROL DE ACCESO</p>
+                <div class="role-cards-grid">
+                    <div id="role-admin" class="role-card active">
+                        <span class="role-emoji">👨‍💼</span>
+                        <div class="role-info">
+                            <strong>Administrador</strong>
+                            <span>Dueño del negocio</span>
+                        </div>
+                    </div>
+                    <div id="role-vendedor" class="role-card">
+                        <span class="role-emoji">👤</span>
+                        <div class="role-info">
+                            <strong>Empleado</strong>
+                            <span>Vendedor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="box-login" class="glass-box">
+                <div class="glass-header">
+                    <span class="brand-icon">✏️🏆</span>
+                    <h2>El Lápiz de Oro</h2>
+                    <p>CONTROL DE ACCESOS INTERNOS</p>
+                </div>
+                
+                <form id="loginForm" autocomplete="off">
+                    <div class="glass-input-group">
+                        <span class="input-icon">✉️</span>
+                        <input type="email" id="login-email" required placeholder="Usuario o Correo" autocomplete="new-password">
+                    </div>
+                    <div class="glass-input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="login-password" required placeholder="Contraseña de Acceso" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-glass-submit">Ingresar al Sistema</button>
+                </form>
+                
+                <p class="glass-switch-text">¿Dar de alta nuevo personal? <a href="#" id="link-ir-a-registro">Registrar aquí</a></p>
+                <div id="login-error" class="glass-error-msg" style="display:none; color: #f87171; font-size: 12px; margin-top: 10px; text-align: center;"></div>
+            </div>
+
+            <div id="box-registro" class="glass-box" style="display: none;">
+                <div class="glass-header">
+                    <span class="brand-icon">📖✨</span>
+                    <h2>El Lápiz de Oro</h2>
+                    <p>ALTA DE NUEVO PERSONAL</p>
+                </div>
+                
+                <form id="registroForm" autocomplete="off">
+                    <div class="glass-input-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="registro-name" required placeholder="Nombre Completo" autocomplete="new-password">
+                    </div>
+                    <div class="glass-input-group">
+                        <span class="input-icon">✉️</span>
+                        <input type="email" id="registro-email" required placeholder="Correo Electrónico" autocomplete="new-password">
+                    </div>
+                    <div class="glass-input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="registro-password" required placeholder="Asignar Contraseña" autocomplete="new-password">
+                    </div>
+                    <div class="glass-input-group">
+                        <span class="input-icon">🛡️</span>
+                        <input type="password" id="registro-confirm-password" required placeholder="Confirmar Contraseña" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-glass-submit" style="background-color: #10b981; color: white;">Confirmar y Guardar Registro</button>
+                </form>
+                
+                <p class="glass-switch-text">¿Regresar al panel? <a href="#" id="link-ir-a-login">Volver al Login</a></p>
+                <div id="registro-error" class="glass-error-msg" style="display:none; color: #f87171; font-size: 12px; margin-top: 10px; text-align: center;"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

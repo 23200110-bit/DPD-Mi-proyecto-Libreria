@@ -1,0 +1,46 @@
+<div class="admin-subview active">
+    <div class="welcome-banner">
+        <h2>📋 Control Maestro de Inventario</h2>
+        <p>Monitoreo global de stock, categorías y estados del establecimiento.</p>
+    </div>
+
+    <div class="operaciones-box" style="margin-bottom: 20px; padding: 15px !important;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            <div class="form-group-vendedor" style="flex: 1; min-width: 250px; margin-bottom: 0 !important;">
+                <input type="text" id="admin-buscar-inventario" placeholder="🔍 Buscar por nombre o marca...">
+            </div>
+            <div class="form-group-vendedor" style="width: 200px; margin-bottom: 0 !important;">
+                <select id="admin-filtros-stock">
+                    <option value="todos">📦 Todos los productos</option>
+                    <option value="disponible">✅ Con Stock</option>
+                    <option value="alerta">⚠️ Alerta Mínima</option>
+                    <option value="agotado">❌ Agotados</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="carrito-box" style="padding: 15px !important; overflow-x: auto;">
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">ID</th>
+                    <th>Producto</th>
+                    <th>Marca</th>
+                    <th>Categoría</th>
+                    <th>Precio Costo</th> <th>Precio Venta</th>
+                    <th style="text-align: center;">Stock</th>
+                    <th>Estado</th>
+                    <th style="text-align: center; width: 100px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-tabla-inventario-cuerpo">
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 30px; color: #64748b;">
+                        ⏳ Cargando registros oficiales...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

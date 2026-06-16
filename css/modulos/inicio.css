@@ -1,0 +1,32 @@
+.admin-subview { display: none !important; }
+.admin-subview.active { display: block !important; }
+.welcome-banner h2 { margin: 0 0 4px 0; color: #0f172a; font-size: 24px; }
+.welcome-banner p { margin: 0 0 24px 0; color: #64748b; font-size: 14px; }
+.metrics-dashboard-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important; gap: 16px !important; margin-bottom: 30px !important; }
+.metric-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+.metric-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+.metric-value { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.metric-footer { font-size: 11px; color: #64748b; }
+.card-blue { border-top: 4px solid #2563eb; }
+.card-amber { border-top: 4px solid #d97706; }
+.card-blue-light { border-top: 4px solid #0ea5e9; }
+.card-orange { border-top: 4px solid #ea580c; }
+.card-green { border-top: 4px solid #16a34a; }
+.card-indigo { border-top: 4px solid #4f46e5; }
+.alerts-panel-container { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
+.alerts-panel-header { display: flex; justify-content: space-between; align-items: center; }
+.alerts-panel-header h3 { margin: 0; font-size: 16px; color: #0f172a; }
+.alerts-total-indicator { background-color: #dc2626; color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+.alerts-panel-subtitle { margin: 4px 0 16px 0; color: #64748b; font-size: 13px; }
+.alerts-list-wrapper { display: flex; flex-direction: column; gap: 10px; }
+.alert-item { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 14px; }
+.alert-icon { font-size: 18px; }
+.alert-info { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+.alert-info strong { font-size: 13px; color: #1e293b; }
+.alert-info span { font-size: 11px; color: #64748b; }
+.alert-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+.tag-warning { background-color: #fef3c7; color: #d97706; }
+.tag-danger { background-color: #fee2e2; color: #dc2626; }
+.temporary-empty-view { background: white; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 40px; text-align: center; }
+.temporary-empty-view h3 { color: #334155; margin-top: 0; }
+.temporary-empty-view p { color: #64748b; font-size: 14px; }

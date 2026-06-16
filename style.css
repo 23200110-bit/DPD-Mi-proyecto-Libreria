@@ -1,0 +1,18 @@
+/* ==========================================================================
+   STYLE.CSS - INDEX GENERAL DE ESTILOS (SIVEP)
+   ========================================================================== */
+
+/* 1. Base, Formularios y Estructuras Globales */
+@import url('css/globales.css');
+
+/* 2. Pantallas de Autenticación de Cristal (Tu hermoso Login) */
+@import url('css/login.css');
+
+/* 3. Maquetación y Menús de Contenedores Principales */
+@import url('css/admin-layout.css');
+@import url('css/vendedor-layout.css');
+
+/* 4. Estilos de Pantallas Individuales (Módulos) */
+@import url('css/modulos/inicio.css');
+@import url('css/modulos/ventas.css');
+/* Nota: Conforme llenemos compras, precios, caja, etc., agregaremos sus @import aquí */

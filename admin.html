@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVEP - Panel Administrador</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="panel-layout-wrapper">
+        <nav class="top-navbar">
+            <div class="nav-brand-section">
+                <span class="nav-brand-logo">✏️🏆</span>
+                <div class="nav-brand-text">
+                    <strong>El Lápiz de Oro</strong>
+                    <span>SIVEP - Administrador</span>
+                </div>
+            </div>
+
+            <div class="nav-menu-options">
+                <button id="btn-nav-inicio" class="nav-btn">🏠 Inicio</button>
+                <button id="btn-nav-compras" class="nav-btn">📦 Compras</button>
+                <button id="btn-nav-precios" class="nav-btn">🏷️ Precios</button>
+                <button id="btn-nav-ventas" class="nav-btn">🛒 Ventas</button>
+                <button id="btn-nav-inventario" class="nav-btn">📋 Inventario</button>
+                <button id="btn-nav-caja" class="nav-btn">💰 Caja</button>
+                <button id="btn-nav-empleados" class="nav-btn">👥 Empleados</button>
+                <button id="btn-nav-reportes" class="nav-btn">📊 Reportes</button>
+                <button id="btn-nav-alertas" class="nav-btn badge-alert-nav">🔔 Alertas <span class="alert-counter-badge">3</span></button>
+                <button id="btn-nav-seguridad" class="nav-btn">🛡️ Seguridad</button>
+            </div>
+
+            <div class="nav-user-controls">
+                <span id="session-user-badge" class="badge-profile-name">Cargando...</span>
+                <button id="btn-logout" class="btn-nav-salir">Salir</button>
+            </div>
+        </nav>
+
+        <main id="admin-main-container" class="admin-main-content">
+            </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="js/admin-main.js"></script>
+</body>
+</html>

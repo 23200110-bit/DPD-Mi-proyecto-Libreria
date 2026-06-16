@@ -1,0 +1,24 @@
+/* ==========================================================================
+   css/login.css - ESTILOS ORIGINALES DE TU LOGIN DE CRISTAL (SIN CAMBIOS)
+   ========================================================================== */
+.glass-auth-screen {
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important;
+    background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1920&auto=format&fit=crop') !important;
+    background-size: cover !important; background-position: center !important;
+}
+.glass-card { background: rgba(255, 255, 255, 0.06) !important; backdrop-filter: blur(20px) saturate(180%) !important; width: 100% !important; max-width: 440px !important; padding: 35px 30px !important; border-radius: 24px !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important; box-sizing: border-box; }
+.role-selection-container { margin-bottom: 25px; text-align: left; }
+.role-title { color: rgba(255, 255, 255, 0.5) !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: 1.5px; margin: 0 0 10px 0; text-transform: uppercase; }
+.role-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.role-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.25s ease; }
+.role-card.active { background: rgba(59, 130, 246, 0.15) !important; border-color: #3b82f6 !important; }
+.role-info strong { color: rgba(255, 255, 255, 0.8); font-size: 13px; }
+.role-card.active .role-info strong { color: #ffffff !important; }
+.role-info span { color: rgba(255, 255, 255, 0.4); font-size: 10px; }
+.glass-header h2 { color: #ffffff !important; margin: 0; }
+.glass-input-group { margin-bottom: 20px; border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important; display: flex; align-items: center; }
+.glass-input-group input { width: 100% !important; background: transparent !important; border: none !important; padding: 10px; color: white !important; outline: none; }
+.btn-glass-submit { width: 100% !important; padding: 12px !important; border-radius: 50px !important; font-weight: 700; cursor: pointer; border: none; }
+.glass-switch-text { color: rgba(255, 255, 255, 0.5); font-size: 13px; text-align: center; }
+.glass-switch-text a { color: #3b82f6; text-decoration: none; }

@@ -1,0 +1,47 @@
+.panel-layout-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh;
+    width: 100%;
+}
+.top-navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 24px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    position: sticky !important;
+    top: 0;
+    z-index: 100;
+}
+.nav-brand-section { display: flex; align-items: center; gap: 12px; }
+.nav-brand-logo { font-size: 24px; }
+.nav-brand-text { display: flex; flex-direction: column; }
+.nav-brand-text strong { color: #0f172a; font-size: 15px; }
+.nav-brand-text span { color: #64748b; font-size: 11px; }
+.nav-menu-options { display: flex !important; gap: 6px !important; }
+.nav-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #475569 !important;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.nav-btn:hover { background-color: #f1f5f9 !important; color: #0f172a !important; }
+.nav-btn.active { background-color: #0284c7 !important; color: #ffffff !important; }
+.badge-alert-nav { position: relative; }
+.alert-counter-badge { background-color: #dc2626 !important; color: white !important; font-size: 11px !important; padding: 2px 6px !important; border-radius: 10px !important; font-weight: 700; }
+.nav-user-controls { display: flex; align-items: center; gap: 15px; }
+.badge-profile-name { background-color: #f1f5f9; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.btn-nav-salir { background-color: #fef2f2 !important; color: #dc2626 !important; border: 1px solid #fca5a5 !important; padding: 6px 14px !important; border-radius: 8px !important; font-size: 12px !important; font-weight: 600 !important; cursor: pointer; }
+.btn-nav-salir:hover { background-color: #fee2e2 !important; }
+.admin-main-content { padding: 24px !important; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box; }

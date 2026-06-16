@@ -1,0 +1,61 @@
+<div class="modulo-contenedor-ventas">
+    
+    <div class="welcome-banner">
+        <h2>🛒 Módulo de Ventas en Tiempo Real</h2>
+        <p>Registra los productos solicitados por el cliente para procesar el comprobante.</p>
+    </div>
+
+    <div class="glass-form-card" style="margin-bottom: 25px; padding: 20px;">
+        <h3 style="margin-top: 0; color: #1e293b; margin-bottom: 15px;">Añadir Producto al Carrito</h3>
+        
+        <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+            
+            <div style="flex: 2; min-width: 250px;">
+                <label for="vendedor-select-producto" style="display: block; margin-bottom: 5px; font-weight: 600; color: #475569;">Seleccionar Producto / Libro:</label>
+                <select id="vendedor-select-producto" class="crm-select-input" style="width: 100%; padding: 10px; border-radius: 8px;">
+                    </select>
+            </div>
+
+            <div style="flex: 1; min-width: 100px;">
+                <label for="vendedor-input-cantidad" style="display: block; margin-bottom: 5px; font-weight: 600; color: #475569;">Cantidad:</label>
+                <input type="number" id="vendedor-input-cantidad" value="1" min="1" class="crm-text-input" style="width: 100%; padding: 10px; border-radius: 8px; text-align: center;">
+            </div>
+
+            <div>
+                <button id="btn-vendedor-agregar" class="action-btn-primary" style="padding: 11px 24px; font-weight: bold; height: 42px;">
+                    ➕ Agregar
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="table-container-wrapper">
+        <table class="modern-data-table">
+            <thead>
+                <tr>
+                    <th>Producto / Descripción</th>
+                    <th>Precio Unitario</th>
+                    <th>Cant.</th>
+                    <th>Subtotal</th>
+                    <th style="width: 80px; text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="vendedor-tabla-carrito-cuerpo">
+                </tbody>
+        </table>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+        <div>
+            <span style="font-size: 14px; color: #64748b; display: block; font-weight: 600;">TOTAL A PAGAR</span>
+            <strong id="vendedor-total-monto" style="font-size: 28px; color: #0f172a; font-family: sans-serif;">S/. 0.00</strong>
+        </div>
+        <div>
+            <button id="btn-vendedor-confirmar" class="action-btn-success" style="padding: 14px 32px; font-size: 15px; font-weight: bold;">
+                🟢 Confirmar Transacción Real
+            </button>
+        </div>
+    </div>
+
+</div>

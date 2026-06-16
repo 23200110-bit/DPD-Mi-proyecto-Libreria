@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVEP - Panel de Ventas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/vendedor-layout.css">
+</head>
+<body>
+
+    <div class="panel-layout-wrapper">
+        <nav class="top-navbar">
+            <div class="nav-brand-section">
+                <span class="nav-brand-logo">✏️🏆</span>
+                <div class="nav-brand-text">
+                    <strong>El Lápiz de Oro</strong>
+                    <span>SIVEP - Personal de Ventas</span>
+                </div>
+            </div>
+
+            <div class="nav-menu-options" id="vendedor-menu-options">
+                <button id="btn-vendedor-nav-inicio" class="nav-btn">🏠 Inicio</button>
+                <button id="btn-vendedor-nav-inventario" class="nav-btn">📦 Inventario</button>
+                <button id="btn-vendedor-nav-ventas" class="nav-btn">🛒 Venta</button>
+                <button id="btn-vendedor-nav-conteo" class="nav-btn">📋 Conteo</button>
+            </div>
+
+            <div class="nav-user-controls">
+                <span id="session-user-badge" class="badge-profile-name">Cargando...</span>
+                <button id="btn-logout" class="btn-nav-salir">Salir</button>
+            </div>
+        </nav>
+
+        <main id="vendedor-main-container" class="admin-main-content">
+            </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="js/vendedor-main.js"></script>
+</body>
+</html>

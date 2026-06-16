@@ -1,0 +1,9 @@
+.admin-subview.dynamic-sales-layout { display: grid !important; grid-template-columns: 1fr 2fr !important; gap: 24px !important; }
+.operaciones-box, .carrito-box { background: #ffffff !important; padding: 25px !important; border-radius: 12px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; border: 1px solid #e2e8f0; }
+.operaciones-box h3, .carrito-box h3 { margin-top: 0 !important; color: #0f172a !important; border-bottom: 1px solid #e2e8f0 !important; padding-bottom: 10px !important; }
+.form-group-vendedor { margin-bottom: 15px !important; }
+.form-group-vendedor label { display: block !important; margin-bottom: 6px !important; font-weight: 600 !important; color: #475569 !important; }
+.form-group-vendedor select, .form-group-vendedor input { width: 100% !important; padding: 10px !important; border: 1px solid #cbd5e1 !important; border-radius: 8px !important; }
+.btn-action { width: 100% !important; padding: 12px !important; background-color: #0284c7 !important; color: white !important; border: none !important; border-radius: 8px !important; cursor: pointer !important; font-weight: 600 !important; }
+.total-container { text-align: right !important; margin-top: 20px !important; font-size: 19px !important; }
+.btn-confirmar { width: 100% !important; margin-top: 15px !important; padding: 14px !important; background-color: #16a34a !important; color: white !important; border: none !important; border-radius: 8px !important; font-weight: 700 !important; cursor: pointer; }

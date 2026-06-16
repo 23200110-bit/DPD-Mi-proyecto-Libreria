@@ -1,0 +1,92 @@
+<div class="welcome-banner">
+    <h2>Gestión de Precios</h2>
+    <p>Administra los precios de tus productos</p>
+</div>
+
+<div class="prices-strategy-card">
+    <div class="provider-change-alert">
+        <span>⚠️</span>
+        <div>
+            <strong>Cambio de Precio de Proveedor</strong>
+            <p>El proveedor ha actualizado el costo de un producto</p>
+        </div>
+    </div>
+
+    <div class="product-cost-impact-box">
+        <h4>Papel bond A4 80g 500 hojas</h4>
+        <div class="product-impact-flex">
+            <span>Costo anterior: <del>S/. 21.60</del></span>
+            <span>Nuevo costo: <strong style="color: #dc2626;">S/. 24.00</strong></span>
+            <span class="percentage-badge-increase">+11.1% aumento</span>
+        </div>
+    </div>
+
+    <div class="form-row-single">
+        <label>Selecciona un Inventario:</label>
+        <select>
+            <option>Papel bond A4 80g 500 hojas</option>
+        </select>
+    </div>
+
+    <label style="font-size: 14px; font-weight: 600; display: block; margin: 16px 0 8px;">Selecciona una estrategia de precios:</label>
+    <div class="strategy-options-grid">
+        <div class="strategy-option-box selected">
+            <strong>Precio Promedio Ponderado</strong>
+            <p>Calcula automáticamente el precio sugerido basado en el costo promedio.</p>
+            <span style="display: block; margin-top: 8px; color: #0284c7; font-weight: bold;">Precio sugerido: S/. 31.11</span>
+        </div>
+
+        <div class="strategy-option-box">
+            <strong>PEPS / FIFO</strong>
+            <p>Vende primero el stock antiguo al precio anterior.</p>
+            <span style="display: block; margin-top: 8px; color: #0284c7; font-weight: bold;">Precio sugerido: S/. 28.00</span>
+        </div>
+
+        <div class="strategy-option-box">
+            <strong>Precio Manual</strong>
+            <p>Ingresa el precio de venta que desees de manera personalizada.</p>
+        </div>
+    </div>
+
+    <button class="btn-apply-strategy-action" onclick="alert('Estrategia de precio aplicada')">✓ Aplicar Estrategia</button>
+</div>
+
+<div class="price-history-container">
+    <h3>$ Historial de Cambios de Precio</h3>
+    <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Registro de todos los cambios de precio realizados</p>
+
+    <table class="prices-history-table">
+        <thead>
+            <tr>
+                <th>Inventario</th>
+                <th>Cambio</th>
+                <th>Precio Anterior</th>
+                <th>Precio Nuevo</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Papel bond A4 80g 500 hojas</td>
+                <td><span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📈 Subió</span></td>
+                <td>S/. 24.00</td>
+                <td><strong>S/. 28.00</strong></td>
+                <td>09/05/2026</td>
+            </tr>
+            <tr>
+                <td>Colores Faber-Castell x24 largos</td>
+                <td><span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📈 Subió</span></td>
+                <td>S/. 22.50</td>
+                <td><strong>S/. 24.90</strong></td>
+                <td>07/05/2026</td>
+            </tr>
+            <tr>
+                <td>Borrador Faber-Castell PVC 20</td>
+                <td><span style="background: #dcfce7; color: #16a34a; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📉 Bajó</span></td>
+                <td>S/. 1.50</td>
+                <td><strong>S/. 1.20</strong></td>
+                <td>04/05/2026</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
