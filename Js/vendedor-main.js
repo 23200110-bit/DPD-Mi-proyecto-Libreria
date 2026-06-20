@@ -71,23 +71,46 @@ async function cambiarVistaVendedor(vistaID) {
         return;
     }
 
-    try {
-        const respuesta = await fetch(`vistas/vendedor/${vistaID}.html`);
-        if (respuesta.ok) {
-            contenedor.innerHTML = await respuesta.text();
+   try {
+    let archivoVista = `${vistaID}.html`;
 
-            // Inicializar ventas si corresponde
-            if (vistaID === 'ventas') {
-                inicializarModuloVentas();
-            }
-        } else {
-            contenedor.innerHTML = `
-                <div class="temporary-empty-view">
-                    <h3>⚠️ Módulo en Desarrollo</h3>
-                    <p>La pantalla de "vistas/vendedor/${vistaID}.html" se creará pronto.</p>
-                </div>`;
-        }
-    } catch (err) {
-        console.error("Error al cargar sub-vista:", err);
+    if (vistaID === 'inicio') {
+        archivoVista = 'inicio-vendedor.html';
+    } else if (vistaID === 'inventario') {
+        archivoVista = 'inventario-vendedor.html';
     }
+
+    const respuesta = await fetch(`vistas/vendedor/${archivoVista}`);
+
+    if (respuesta.ok) {
+        contenedor.innerHTML = await respuesta.text();
+
+        // Inicializar ventas
+        if (vistaID === 'ventas') {
+            inicializarModuloVentas();
+        }
+
+        // Inicializar módulo Inicio Vendedor
+        if (vistaID === 'inicio') {
+            const modulo = await import('./modulos/inicio-vendedor.js');
+            modulo.inicializarInicioVendedor();
+        }
+
+        // Inicializar módulo Inventario Vendedor
+        if (vistaID === 'inventario') {
+            const modulo = await import('./modulos/inventario-vendedor.js');
+            modulo.inicializarInventarioVendedor();
+        }
+
+    } else {
+        contenedor.innerHTML = `
+            <div class="temporary-empty-view">
+                <h3>⚠️ Módulo en Desarrollo</h3>
+                <p>La pantalla de "vistas/vendedor/${archivoVista}" se creará pronto.</p>
+            </div>`;
+    }
+
+} catch (err) {
+    console.error("Error al cargar sub-vista:", err);
+}
 }

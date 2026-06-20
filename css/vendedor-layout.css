@@ -3,3 +3,73 @@
    ========================================================================== */
 /* Nota de Senior: Este archivo queda listo por si a futuro necesitas darle un color o estilo único 
    a la barra superior del vendedor. Los estilos del carrito ya viven de forma global en ventas.css */
+   .inicio-vendedor {
+  padding: 30px;
+}
+
+.inicio-vendedor h1 {
+  margin-bottom: 10px;
+}
+
+.accesos-rapidos {
+  display: flex;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.btn-acceso {
+  padding: 15px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.buscador-productos {
+  margin-top: 30px;
+}
+
+.buscador-productos input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.resultado-producto {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* Tarjetas de información del producto */
+.resultado-producto {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.info-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 180px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+}
+
+.info-card small {
+    display: block;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.info-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
