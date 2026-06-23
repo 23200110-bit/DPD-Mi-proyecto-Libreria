@@ -5,6 +5,9 @@ import { supabaseClient } from '../supabase-config.js';
 
 const IGV_PORCENTAJE = 0.18;
 
+// ⬇ Cambia este número por el celular registrado en Yape/Plin de la tienda
+const NUMERO_YAPE_TIENDA = '923310991';
+
 let CARRITO = [];
 let PRODUCTOS = [];
 let categoriaActiva = 'Todos';
@@ -16,16 +19,19 @@ let totalActual = 0;
 export async function inicializarModuloVentas() {
     CARRITO = [];
     categoriaActiva = 'Todos';
+    totalActual = 0;
 
     await cargarProductos();
     renderizarCarrito();
     await cargarHistorial();
 
+    // Buscador de texto
     const buscador = document.getElementById('buscador-productos');
     if (buscador) {
         buscador.addEventListener('input', renderizarCatalogo);
     }
 
+    // Filtros de categoría
     const botonesFiltro = document.querySelectorAll('.filtros-categorias button');
     botonesFiltro.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -36,7 +42,7 @@ export async function inicializarModuloVentas() {
         });
     });
 
-    // Toggle de Tipo de Comprobante y Método de Pago (cada grupo es independiente)
+    // Toggle de Tipo de Comprobante y Método de Pago
     const gruposBotones = document.querySelectorAll('.grupo-botones');
     gruposBotones.forEach(grupo => {
         grupo.querySelectorAll('.btn-opcion').forEach(btn => {
@@ -45,7 +51,7 @@ export async function inicializarModuloVentas() {
                 btn.classList.add('activo');
 
                 if (grupo.dataset.grupo === 'metodo-pago') {
-                    actualizarVisibilidadMontoRecibido(btn.dataset.valor);
+                    actualizarVisibilidadMetodoPago(btn.dataset.valor);
                 }
                 if (grupo.dataset.grupo === 'comprobante') {
                     actualizarVisibilidadDatosFactura(btn.dataset.valor);
@@ -54,6 +60,7 @@ export async function inicializarModuloVentas() {
         });
     });
 
+    // Listener del campo "Monto Recibido" para calcular vuelto en vivo
     const inputRecibido = document.getElementById('monto-recibido');
     if (inputRecibido) {
         inputRecibido.addEventListener('input', actualizarVuelto);
@@ -64,15 +71,22 @@ export async function inicializarModuloVentas() {
         btnLimpiar.addEventListener('click', limpiarCarrito);
     }
 
+    // Botón Escanear → abre el modal
+    const btnEscanear = document.getElementById('btn-abrir-escaner');
+    if (btnEscanear) {
+        btnEscanear.addEventListener('click', abrirModalEscaner);
+    }
+
     const btnCobrar = document.querySelector('.btn-cobrar');
     if (btnCobrar) {
         btnCobrar.addEventListener('click', confirmarVenta);
     }
 }
 
-/**
- * Trae todos los productos de Supabase y los guarda en memoria
- */
+/* ==========================================================================
+   CATÁLOGO
+   ========================================================================== */
+
 async function cargarProductos() {
     const { data, error } = await supabaseClient
         .from('productos')
@@ -88,9 +102,6 @@ async function cargarProductos() {
     renderizarCatalogo();
 }
 
-/**
- * Dibuja las tarjetas de producto aplicando el filtro de texto y categoría activa
- */
 function renderizarCatalogo() {
     const contenedor = document.getElementById('contenedor-tarjetas');
     if (!contenedor) return;
@@ -107,7 +118,7 @@ function renderizarCatalogo() {
     contenedor.innerHTML = '';
 
     if (filtrados.length === 0) {
-        contenedor.innerHTML = '<p>No se encontraron productos.</p>';
+        contenedor.innerHTML = '<p style="color:#888;font-size:14px;">No se encontraron productos.</p>';
         return;
     }
 
@@ -124,9 +135,10 @@ function renderizarCatalogo() {
     });
 }
 
-/**
- * Agrega un producto al carrito (o aumenta su cantidad si ya estaba)
- */
+/* ==========================================================================
+   CARRITO
+   ========================================================================== */
+
 function agregarAlCarrito(producto) {
     if (producto.stock_actual <= 0) {
         alert('No hay stock disponible de este producto.');
@@ -154,9 +166,6 @@ function agregarAlCarrito(producto) {
     renderizarCarrito();
 }
 
-/**
- * Suma o resta unidades a un ítem del carrito. Si llega a 0, lo elimina.
- */
 function cambiarCantidad(index, delta) {
     const item = CARRITO[index];
     if (!item) return;
@@ -191,9 +200,6 @@ function limpiarCarrito() {
     renderizarCarrito();
 }
 
-/**
- * Dibuja el ticket actual (columna derecha) y recalcula subtotal/IGV/total
- */
 function renderizarCarrito() {
     const lista = document.getElementById('lista-carrito');
     if (!lista) return;
@@ -224,13 +230,16 @@ function renderizarCarrito() {
     });
 
     lista.querySelectorAll('.btn-restar').forEach(btn => {
-        btn.addEventListener('click', e => cambiarCantidad(parseInt(e.currentTarget.dataset.index, 10), -1));
+        btn.addEventListener('click', e =>
+            cambiarCantidad(parseInt(e.currentTarget.dataset.index, 10), -1));
     });
     lista.querySelectorAll('.btn-sumar').forEach(btn => {
-        btn.addEventListener('click', e => cambiarCantidad(parseInt(e.currentTarget.dataset.index, 10), 1));
+        btn.addEventListener('click', e =>
+            cambiarCantidad(parseInt(e.currentTarget.dataset.index, 10), 1));
     });
     lista.querySelectorAll('.btn-eliminar-item').forEach(btn => {
-        btn.addEventListener('click', e => eliminarDelCarrito(parseInt(e.currentTarget.dataset.index, 10)));
+        btn.addEventListener('click', e =>
+            eliminarDelCarrito(parseInt(e.currentTarget.dataset.index, 10)));
     });
 
     const igv = subtotal * IGV_PORCENTAJE;
@@ -238,48 +247,115 @@ function renderizarCarrito() {
     totalActual = total;
 
     const elSubtotal = document.getElementById('monto-subtotal');
-    const elIgv = document.getElementById('monto-igv');
-    const elTotal = document.getElementById('monto-total');
+    const elIgv     = document.getElementById('monto-igv');
+    const elTotal   = document.getElementById('monto-total');
 
     if (elSubtotal) elSubtotal.textContent = `S/ ${subtotal.toFixed(2)}`;
-    if (elIgv) elIgv.textContent = `S/ ${igv.toFixed(2)}`;
-    if (elTotal) elTotal.textContent = `S/ ${total.toFixed(2)}`;
+    if (elIgv)      elIgv.textContent      = `S/ ${igv.toFixed(2)}`;
+    if (elTotal)    elTotal.textContent    = `S/ ${total.toFixed(2)}`;
 
+    // Actualizar el vuelto (si efectivo está activo) y el QR (si Yape/Plin está activo)
     actualizarVuelto();
+    actualizarQRSiVisible();
 }
 
+/* ==========================================================================
+   VISIBILIDAD DE SECCIONES SEGÚN SELECCIÓN
+   ========================================================================== */
+
 /**
- * Muestra/oculta la caja de "Monto Recibido" según el método de pago elegido
+ * Muestra "Efectivo" → caja de monto recibido
+ * Muestra "Yape/Plin" → QR
+ * Muestra "Tarjeta" → nada extra
  */
-function actualizarVisibilidadMontoRecibido(metodoPago) {
-    const caja = document.getElementById('caja-monto-recibido');
-    if (!caja) return;
+function actualizarVisibilidadMetodoPago(metodoPago) {
+    const cajaEfectivo = document.getElementById('caja-monto-recibido');
+    const cajaQR       = document.getElementById('caja-qr-yape');
+
+    // Ocultar todo primero
+    if (cajaEfectivo) cajaEfectivo.style.display = 'none';
+    if (cajaQR)       cajaQR.style.display       = 'none';
 
     if (metodoPago === 'Efectivo') {
-        caja.style.display = '';
-    } else {
-        caja.style.display = 'none';
+        if (cajaEfectivo) cajaEfectivo.style.display = '';
         const input = document.getElementById('monto-recibido');
         if (input) input.value = '';
         actualizarVuelto();
+
+    } else if (metodoPago === 'Yape/Plin') {
+        if (cajaQR) cajaQR.style.display = '';
+        generarQR();
     }
 }
 
-/**
- * Muestra/oculta la caja de RUC y Razón Social según el tipo de comprobante elegido
- */
 function actualizarVisibilidadDatosFactura(tipoComprobante) {
     const caja = document.getElementById('caja-datos-factura');
     if (!caja) return;
     caja.style.display = tipoComprobante === 'Factura' ? '' : 'none';
 }
 
+/* ==========================================================================
+   QR YAPE / PLIN
+   ========================================================================== */
+
 /**
- * Calcula y muestra el vuelto (o lo que falta) según el monto recibido en Efectivo
+ * Regenera el QR si la caja ya está visible (p.ej. cuando cambia el total)
  */
+function actualizarQRSiVisible() {
+    const cajaQR = document.getElementById('caja-qr-yape');
+    if (cajaQR && cajaQR.style.display !== 'none') {
+        generarQR();
+    }
+}
+
+/**
+ * Genera el QR usando la librería QRCode.js (cargada en vendedor.html)
+ * El contenido del QR es el número de celular de la tienda.
+ * El cliente lo escanea con Yape o Plin y ve el número pre-cargado.
+ */
+function generarQR() {
+    const contenedorQR = document.getElementById('contenedor-qr');
+    const elMonto      = document.getElementById('qr-monto-mostrado');
+    const elNumero     = document.getElementById('qr-numero-tienda');
+
+    if (!contenedorQR) return;
+
+    // Actualizar monto visible junto al QR
+    if (elMonto) elMonto.textContent = `S/ ${totalActual.toFixed(2)}`;
+    if (elNumero) elNumero.textContent = `📱 ${NUMERO_YAPE_TIENDA}`;
+
+    // Limpiar QR anterior
+    contenedorQR.innerHTML = '';
+
+    // Verificar que la librería esté disponible
+    if (typeof QRCode === 'undefined') {
+        contenedorQR.innerHTML = `
+            <p style="color:#dc2626;font-size:13px;">
+                ⚠️ Librería QR no disponible.<br>
+                Agrega el script de QRCode.js en vendedor.html
+            </p>`;
+        return;
+    }
+
+    // El QR codifica el número de celular de la tienda
+    // Yape y Plin reconocen números de celular directamente
+    new QRCode(contenedorQR, {
+        text: NUMERO_YAPE_TIENDA,
+        width: 140,
+        height: 140,
+        colorDark: '#1a1a2e',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+    });
+}
+
+/* ==========================================================================
+   EFECTIVO: VUELTO
+   ========================================================================== */
+
 function actualizarVuelto() {
     const inputRecibido = document.getElementById('monto-recibido');
-    const elVuelto = document.getElementById('texto-vuelto');
+    const elVuelto      = document.getElementById('texto-vuelto');
     if (!inputRecibido || !elVuelto) return;
 
     const recibido = parseFloat(inputRecibido.value) || 0;
@@ -301,9 +377,10 @@ function actualizarVuelto() {
     }
 }
 
-/**
- * Lee qué botón está activo dentro del grupo indicado (comprobante o metodo-pago)
- */
+/* ==========================================================================
+   CONFIRMAR VENTA
+   ========================================================================== */
+
 function obtenerSeleccionado(nombreGrupo) {
     const grupo = document.querySelector(`.grupo-botones[data-grupo="${nombreGrupo}"]`);
     if (!grupo) return null;
@@ -311,9 +388,6 @@ function obtenerSeleccionado(nombreGrupo) {
     return activo ? activo.dataset.valor : null;
 }
 
-/**
- * Inserta la venta y sus detalles en Supabase, y descuenta el stock vendido
- */
 async function confirmarVenta() {
     if (CARRITO.length === 0) {
         alert('El carrito está vacío.');
@@ -321,19 +395,19 @@ async function confirmarVenta() {
     }
 
     const tipoComprobante = obtenerSeleccionado('comprobante') || 'Boleta';
-    const metodoPago = obtenerSeleccionado('metodo-pago') || 'Efectivo';
+    const metodoPago      = obtenerSeleccionado('metodo-pago') || 'Efectivo';
 
     const subtotal = CARRITO.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-    const total = subtotal * (1 + IGV_PORCENTAJE);
+    const total    = subtotal * (1 + IGV_PORCENTAJE);
 
-    // Validación: Factura exige RUC (11 dígitos) y Razón Social
-    let rucCliente = null;
+    // Validación Factura: RUC (11 dígitos) y Razón Social obligatorios
+    let rucCliente         = null;
     let razonSocialCliente = null;
 
     if (tipoComprobante === 'Factura') {
-        const inputRuc = document.getElementById('factura-ruc');
+        const inputRuc   = document.getElementById('factura-ruc');
         const inputRazon = document.getElementById('factura-razon-social');
-        rucCliente = (inputRuc?.value || '').trim();
+        rucCliente         = (inputRuc?.value || '').trim();
         razonSocialCliente = (inputRazon?.value || '').trim();
 
         if (!/^\d{11}$/.test(rucCliente)) {
@@ -348,7 +422,7 @@ async function confirmarVenta() {
         }
     }
 
-    // Validación: Efectivo exige un monto recibido suficiente
+    // Validación Efectivo: monto recibido debe cubrir el total
     if (metodoPago === 'Efectivo') {
         const inputRecibido = document.getElementById('monto-recibido');
         const recibido = parseFloat(inputRecibido?.value) || 0;
@@ -363,16 +437,15 @@ async function confirmarVenta() {
     if (btnCobrar) btnCobrar.disabled = true;
 
     try {
-        // 1. Crear la venta
+        // 1. Insertar la venta principal
         const datosVenta = {
             tipo_comprobante: tipoComprobante,
-            metodo_pago: metodoPago,
-            total_cobrado: total
-            // empleado_id: TODO -> asignar cuando el módulo de sesión/login esté listo
+            metodo_pago:      metodoPago,
+            total_cobrado:    total
+            // empleado_id: TODO → asignar cuando esté el módulo de sesión
         };
-
         if (tipoComprobante === 'Factura') {
-            datosVenta.ruc_cliente = rucCliente;
+            datosVenta.ruc_cliente          = rucCliente;
             datosVenta.razon_social_cliente = razonSocialCliente;
         }
 
@@ -384,11 +457,11 @@ async function confirmarVenta() {
 
         if (errorVenta) throw errorVenta;
 
-        // 2. Crear el detalle de cada producto vendido
+        // 2. Insertar el detalle de cada producto
         const detalles = CARRITO.map(item => ({
-            venta_id: ventaCreada.id_venta,
-            producto_id: item.id,
-            cantidad: item.cantidad,
+            venta_id:        ventaCreada.id_venta,
+            producto_id:     item.id,
+            cantidad:        item.cantidad,
             precio_unitario: item.precio
         }));
 
@@ -398,10 +471,10 @@ async function confirmarVenta() {
 
         if (errorDetalles) throw errorDetalles;
 
-        // 3. Descontar el stock vendido de cada producto
+        // 3. Descontar stock
         for (const item of CARRITO) {
             const productoActual = PRODUCTOS.find(p => p.id === item.id);
-            const stockBase = productoActual ? productoActual.stock_actual : item.stockDisponible;
+            const stockBase  = productoActual ? productoActual.stock_actual : item.stockDisponible;
             const nuevoStock = stockBase - item.cantidad;
 
             const { error: errorStock } = await supabaseClient
@@ -421,15 +494,16 @@ async function confirmarVenta() {
 
     } catch (err) {
         console.error('Error al registrar la venta:', err);
-        alert('❌ Ocurrió un error al registrar la venta. Revisa la consola para más detalles.');
+        alert('❌ Ocurrió un error al registrar la venta. Revisa la consola.');
     } finally {
         if (btnCobrar) btnCobrar.disabled = false;
     }
 }
 
-/**
- * Trae las últimas ventas registradas y llena la tabla de historial
- */
+/* ==========================================================================
+   HISTORIAL
+   ========================================================================== */
+
 async function cargarHistorial() {
     const tbody = document.getElementById('cuerpo-historial');
     if (!tbody) return;
@@ -448,7 +522,7 @@ async function cargarHistorial() {
     tbody.innerHTML = '';
 
     (data || []).forEach(venta => {
-        const fila = document.createElement('tr');
+        const fila  = document.createElement('tr');
         const fecha = new Date(venta.fecha_hora).toLocaleString('es-PE');
         fila.innerHTML = `
             <td>#${String(venta.id_venta).padStart(3, '0')}</td>
@@ -465,4 +539,192 @@ async function cargarHistorial() {
         const n = (data || []).length;
         contador.textContent = `${n} venta${n === 1 ? '' : 's'} registrada${n === 1 ? '' : 's'}`;
     }
+}
+
+/* ==========================================================================
+   ESCÁNER DE CÓDIGO DE BARRAS (Html5Qrcode)
+   ========================================================================== */
+
+let escaner = null;        // instancia de Html5Qrcode
+let escanerActivo = false; // para evitar iniciar dos veces
+
+/**
+ * Abre el modal, lista las cámaras disponibles y deja al usuario elegir
+ */
+async function abrirModalEscaner() {
+    const modal = document.getElementById('modal-escaner');
+    if (!modal) return;
+    modal.style.display = 'flex';
+
+    // Verificar que la librería esté cargada
+    if (typeof Html5Qrcode === 'undefined') {
+        mostrarResultadoEscaner('❌ Librería Html5Qrcode no disponible. Agrega el script en vendedor.html', false);
+        return;
+    }
+
+    // Listar cámaras disponibles
+    const select = document.getElementById('select-camara');
+    if (select && select.options.length === 0) {
+        try {
+            const camaras = await Html5Qrcode.getCameras();
+            if (!camaras || camaras.length === 0) {
+                mostrarResultadoEscaner('❌ No se detectaron cámaras en este dispositivo.', false);
+                return;
+            }
+            camaras.forEach(cam => {
+                const opt = document.createElement('option');
+                opt.value = cam.id;
+                opt.textContent = cam.label || `Cámara ${cam.id}`;
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            mostrarResultadoEscaner('❌ No se pudo acceder a las cámaras. Verifica los permisos del navegador.', false);
+            return;
+        }
+    }
+
+    // Listeners del modal (solo una vez)
+    const btnCerrar   = document.getElementById('btn-cerrar-escaner');
+    const btnIniciar  = document.getElementById('btn-iniciar-escaner');
+    const btnDetener  = document.getElementById('btn-detener-escaner');
+
+    // Usamos onclick para evitar acumular listeners cada vez que se abre el modal
+    if (btnCerrar)  btnCerrar.onclick  = cerrarModalEscaner;
+    if (btnIniciar) btnIniciar.onclick = iniciarEscaner;
+    if (btnDetener) btnDetener.onclick = detenerEscaner;
+
+    // Cerrar al hacer clic fuera de la caja
+    modal.onclick = (e) => {
+        if (e.target === modal) cerrarModalEscaner();
+    };
+}
+
+/**
+ * Inicia la cámara seleccionada y comienza a buscar códigos de barras
+ */
+async function iniciarEscaner() {
+    if (escanerActivo) return;
+
+    const select     = document.getElementById('select-camara');
+    const btnIniciar = document.getElementById('btn-iniciar-escaner');
+    const btnDetener = document.getElementById('btn-detener-escaner');
+
+    const camaraId = select?.value;
+    if (!camaraId) {
+        mostrarResultadoEscaner('⚠️ Selecciona una cámara primero.', false);
+        return;
+    }
+
+    // Limpiar resultado anterior
+    const divResultado = document.getElementById('escaner-resultado');
+    if (divResultado) divResultado.style.display = 'none';
+
+    try {
+        escaner = new Html5Qrcode('lector-qr');
+
+        await escaner.start(
+            camaraId,
+            {
+                fps: 10,
+                qrbox: { width: 300, height: 120 },  // rectángulo horizontal, ideal para barras
+                aspectRatio: 1.5
+            },
+            onCodigoDetectado,   // éxito
+            () => {}             // errores de frame (normales mientras no hay código)
+        );
+
+        escanerActivo = true;
+        if (btnIniciar) btnIniciar.style.display = 'none';
+        if (btnDetener) btnDetener.style.display = '';
+
+    } catch (err) {
+        console.error('Error al iniciar escáner:', err);
+        mostrarResultadoEscaner('❌ No se pudo iniciar la cámara. Verifica los permisos.', false);
+    }
+}
+
+/**
+ * Se ejecuta cuando se detecta un código. Busca el producto en Supabase.
+ */
+async function onCodigoDetectado(codigoBarras) {
+    // Detener para no seguir leyendo mientras procesamos
+    await detenerEscaner();
+
+    mostrarResultadoEscaner(`🔍 Código detectado: ${codigoBarras}. Buscando producto...`, true);
+
+    const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*')
+        .eq('codigo_barras', codigoBarras)
+        .single();
+
+    if (error || !data) {
+        mostrarResultadoEscaner(
+            `⚠️ Código "${codigoBarras}" no encontrado en el inventario.`,
+            false
+        );
+        // Permitir reintentar
+        const btnIniciar = document.getElementById('btn-iniciar-escaner');
+        if (btnIniciar) btnIniciar.style.display = '';
+        return;
+    }
+
+    // Producto encontrado: agregarlo al carrito y cerrar el modal
+    agregarAlCarrito(data);
+    mostrarResultadoEscaner(`✅ "${data.nombre}" agregado al carrito.`, true);
+
+    // Cerrar el modal después de 1.2 segundos para que el usuario vea el mensaje
+    setTimeout(cerrarModalEscaner, 1200);
+}
+
+/**
+ * Detiene la cámara y limpia la instancia
+ */
+async function detenerEscaner() {
+    const btnIniciar = document.getElementById('btn-iniciar-escaner');
+    const btnDetener = document.getElementById('btn-detener-escaner');
+
+    if (escaner && escanerActivo) {
+        try {
+            await escaner.stop();
+        } catch (e) {
+            // Ignorar errores al detener
+        }
+        escaner = null;
+    }
+    escanerActivo = false;
+
+    if (btnIniciar) btnIniciar.style.display = '';
+    if (btnDetener) btnDetener.style.display = 'none';
+}
+
+/**
+ * Cierra el modal y libera la cámara
+ */
+async function cerrarModalEscaner() {
+    await detenerEscaner();
+
+    const modal = document.getElementById('modal-escaner');
+    if (modal) modal.style.display = 'none';
+
+    // Limpiar el video del DOM
+    const lector = document.getElementById('lector-qr');
+    if (lector) lector.innerHTML = '';
+
+    // Resetear resultado
+    const divResultado = document.getElementById('escaner-resultado');
+    if (divResultado) divResultado.style.display = 'none';
+}
+
+/**
+ * Muestra un mensaje de resultado dentro del modal (éxito o error)
+ */
+function mostrarResultadoEscaner(mensaje, esExito) {
+    const div = document.getElementById('escaner-resultado');
+    const p   = document.getElementById('escaner-mensaje');
+    if (!div || !p) return;
+
+    p.textContent = mensaje;
+    div.className = `escaner-resultado ${esExito ? 'exito' : 'error'}`;
+    div.style.display = '';
 }

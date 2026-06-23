@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../../CSS/modulos/ventas.css">
+<link rel="stylesheet" href="../../css/modulos/ventas.css">
 <div class="modulo-ventas-contenedor">
 
   <div class="cabecera-ventas">
@@ -13,28 +13,16 @@
 
       <div class="barra-busqueda">
         <input type="text" id="buscador-productos" placeholder="Buscar producto...">
-        <button class="btn-escanear">📷 Escanear</button>
+        <button class="btn-escanear" id="btn-abrir-escaner">📷 Escanear</button>
       </div>
 
-      <!-- data-categoria debe coincidir EXACTO con el texto guardado en productos.categoria -->
       <div class="filtros-categorias">
         <button class="activo" data-categoria="Todos">Todos</button>
         <button data-categoria="Cuadernos y Blocks">Cuadernos y Blocks</button>
         <button data-categoria="Lápices y Lapiceros">Lápices y Lapiceros</button>
       </div>
 
-      <div class="cuadricula-productos" id="contenedor-tarjetas">
-        <div class="tarjeta-producto">
-          <h4>Marcador permanente Artesc...</h4>
-          <div class="precio">S/ 2.80</div>
-          <div class="stock">Stock: 22</div>
-        </div>
-        <div class="tarjeta-producto">
-          <h4>Cuaderno Stanford A4...</h4>
-          <div class="precio">S/ 8.50</div>
-          <div class="stock">Stock: 45</div>
-        </div>
-      </div>
+      <div class="cuadricula-productos" id="contenedor-tarjetas"></div>
     </div>
 
     <div class="columna-ticket">
@@ -43,21 +31,7 @@
         <button class="btn-limpiar">🗑️ Limpiar</button>
       </div>
 
-      <div class="lista-ticket" id="lista-carrito">
-        <div class="item-ticket">
-          <div class="info-item">
-            <p>Cuaderno Stanford A4...</p>
-            <small>S/ 8.50 c/u</small>
-          </div>
-          <div class="controles-cantidad">
-            <button>-</button>
-            <span>1</span>
-            <button>+</button>
-          </div>
-          <button class="btn-eliminar-item">❌</button>
-          <strong>S/ 8.50</strong>
-        </div>
-      </div>
+      <div class="lista-ticket" id="lista-carrito"></div>
 
       <div class="resumen-pago">
         <p>Subtotal: <span id="monto-subtotal">S/ 0.00</span></p>
@@ -73,7 +47,7 @@
           <button class="btn-opcion" data-valor="Ticket">Ticket</button>
         </div>
 
-        <!-- Solo se muestra cuando el comprobante seleccionado es "Factura" -->
+        <!-- Solo visible cuando el comprobante es "Factura" -->
         <div class="caja-factura" id="caja-datos-factura" style="display:none;">
           <label for="factura-ruc">RUC</label>
           <input type="text" id="factura-ruc" maxlength="11" inputmode="numeric" placeholder="20123456789">
@@ -88,28 +62,64 @@
           <button class="btn-opcion" data-valor="Yape/Plin">📱 Yape/Plin</button>
         </div>
 
-        <!-- Solo se muestra cuando el método de pago es "Efectivo" -->
+        <!-- Solo visible cuando el método es "Efectivo" -->
         <div class="caja-monto" id="caja-monto-recibido">
           <label>Monto Recibido (S/)</label>
           <input type="number" id="monto-recibido" placeholder="0.00">
           <p class="texto-vuelto" id="texto-vuelto">Vuelto: S/ 0.00</p>
         </div>
+
+        <!-- Solo visible cuando el método es "Yape/Plin" -->
+        <div class="caja-qr-yape" id="caja-qr-yape" style="display:none;">
+          <p class="qr-instruccion">Muestra este QR al cliente para que escanee con su app:</p>
+          <div class="qr-contenido">
+            <div id="contenedor-qr"></div>
+            <div class="qr-info">
+              <p class="qr-label">Total a pagar</p>
+              <p class="qr-monto" id="qr-monto-mostrado">S/ 0.00</p>
+              <p class="qr-numero" id="qr-numero-tienda"></p>
+            </div>
+          </div>
+          <p class="qr-nota">⚠️ Confirma en tu celular que el pago llegó antes de presionar "Cobrar"</p>
+        </div>
       </div>
 
       <button class="btn-cobrar">🧾 Cobrar y Generar Boleta</button>
-
     </div>
-    <!-- ⬆ aquí cierra columna-ticket -->
 
   </div>
-  <!-- ⬆ AQUÍ es donde debe cerrar fila-principal (antes era el bug: -->
-  <!-- fila-historial se abría sin haber cerrado fila-principal) -->
+
+  <!-- ===== MODAL ESCÁNER DE CÓDIGO DE BARRAS ===== -->
+  <div id="modal-escaner" class="modal-escaner-overlay" style="display:none;">
+    <div class="modal-escaner-caja">
+
+      <div class="modal-escaner-cabecera">
+        <h3>📷 Escanear Código de Barras</h3>
+        <button id="btn-cerrar-escaner" class="btn-cerrar-modal">✕</button>
+      </div>
+
+      <div class="modal-escaner-selector">
+        <label for="select-camara">Cámara:</label>
+        <select id="select-camara"></select>
+        <button id="btn-iniciar-escaner" class="btn-iniciar-camara">▶ Iniciar</button>
+        <button id="btn-detener-escaner" class="btn-detener-camara" style="display:none;">⏹ Detener</button>
+      </div>
+
+      <!-- Aquí Html5Qrcode renderiza el video -->
+      <div id="lector-qr"></div>
+
+      <div id="escaner-resultado" class="escaner-resultado" style="display:none;">
+        <p id="escaner-mensaje"></p>
+      </div>
+
+    </div>
+  </div>
 
   <div class="fila-historial">
     <div class="cabecera-historial">
       <div>
         <h3>🕒 Historial de Ventas</h3>
-        <p>1 venta registrada</p>
+        <p>0 ventas registradas</p>
       </div>
       <span class="icono-desplegar">🔽</span>
     </div>
@@ -125,18 +135,9 @@
             <th>Total</th>
           </tr>
         </thead>
-        <tbody id="cuerpo-historial">
-          <tr>
-            <td>#001</td>
-            <td>21/06/2026 15:30</td>
-            <td>Boleta</td>
-            <td>Efectivo</td>
-            <td><strong>S/ 8.50</strong></td>
-          </tr>
-        </tbody>
+        <tbody id="cuerpo-historial"></tbody>
       </table>
     </div>
   </div>
 
 </div>
-<!-- ⬆ cierra modulo-ventas-contenedor -->
