@@ -72,15 +72,19 @@ async function cambiarVistaVendedor(vistaID) {
     }
 
    try {
+    let carpetaVista = 'vendedor';
     let archivoVista = `${vistaID}.html`;
 
     if (vistaID === 'inicio') {
         archivoVista = 'inicio-vendedor.html';
     } else if (vistaID === 'inventario') {
         archivoVista = 'inventario-vendedor.html';
+    } else if (vistaID === 'ventas') {
+        carpetaVista = 'compartido';
+        archivoVista = 'ventas.html';
     }
 
-    const respuesta = await fetch(`vistas/vendedor/${archivoVista}`);
+    const respuesta = await fetch(`vistas/${carpetaVista}/${archivoVista}`);
 
     if (respuesta.ok) {
         contenedor.innerHTML = await respuesta.text();

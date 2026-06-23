@@ -1,61 +1,143 @@
-<div class="modulo-contenedor-ventas">
-    
-    <div class="welcome-banner">
-        <h2>🛒 Módulo de Ventas en Tiempo Real</h2>
-        <p>Registra los productos solicitados por el cliente para procesar el comprobante.</p>
+<link rel="stylesheet" href="../../css/modulos/ventas.css">
+<div class="modulo-ventas-contenedor">
+
+  <div class="cabecera-ventas">
+    <h2>Ventas y Boleta</h2>
+    <p>Registra ventas y genera comprobantes</p>
+  </div>
+
+  <div class="fila-principal">
+
+    <div class="columna-catalogo">
+      <h3>Catálogo de Productos</h3>
+
+      <div class="barra-busqueda">
+        <input type="text" id="buscador-productos" placeholder="Buscar producto...">
+        <button class="btn-escanear" id="btn-abrir-escaner">📷 Escanear</button>
+      </div>
+
+      <div class="filtros-categorias">
+        <button class="activo" data-categoria="Todos">Todos</button>
+        <button data-categoria="Cuadernos y Blocks">Cuadernos y Blocks</button>
+        <button data-categoria="Lápices y Lapiceros">Lápices y Lapiceros</button>
+      </div>
+
+      <div class="cuadricula-productos" id="contenedor-tarjetas"></div>
     </div>
 
-    <div class="glass-form-card" style="margin-bottom: 25px; padding: 20px;">
-        <h3 style="margin-top: 0; color: #1e293b; margin-bottom: 15px;">Añadir Producto al Carrito</h3>
-        
-        <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-            
-            <div style="flex: 2; min-width: 250px;">
-                <label for="vendedor-select-producto" style="display: block; margin-bottom: 5px; font-weight: 600; color: #475569;">Seleccionar Producto / Libro:</label>
-                <select id="vendedor-select-producto" class="crm-select-input" style="width: 100%; padding: 10px; border-radius: 8px;">
-                    </select>
-            </div>
+    <div class="columna-ticket">
+      <div class="cabecera-ticket">
+        <h3>🧾 Ticket Actual</h3>
+        <button class="btn-limpiar">🗑️ Limpiar</button>
+      </div>
 
-            <div style="flex: 1; min-width: 100px;">
-                <label for="vendedor-input-cantidad" style="display: block; margin-bottom: 5px; font-weight: 600; color: #475569;">Cantidad:</label>
-                <input type="number" id="vendedor-input-cantidad" value="1" min="1" class="crm-text-input" style="width: 100%; padding: 10px; border-radius: 8px; text-align: center;">
-            </div>
+      <div class="lista-ticket" id="lista-carrito"></div>
 
-            <div>
-                <button id="btn-vendedor-agregar" class="action-btn-primary" style="padding: 11px 24px; font-weight: bold; height: 42px;">
-                    ➕ Agregar
-                </button>
-            </div>
-            
+      <div class="resumen-pago">
+        <p>Subtotal: <span id="monto-subtotal">S/ 0.00</span></p>
+        <p>IGV (18%): <span id="monto-igv">S/ 0.00</span></p>
+        <h3>Total a Pagar: <span id="monto-total">S/ 0.00</span></h3>
+      </div>
+
+      <div class="opciones-pago">
+        <p class="etiqueta-pago">Tipo de Comprobante</p>
+        <div class="grupo-botones" data-grupo="comprobante">
+          <button class="btn-opcion activo" data-valor="Boleta">Boleta</button>
+          <button class="btn-opcion" data-valor="Factura">Factura</button>
+          <button class="btn-opcion" data-valor="Ticket">Ticket</button>
         </div>
+
+        <!-- Solo visible cuando el comprobante es "Factura" -->
+        <div class="caja-factura" id="caja-datos-factura" style="display:none;">
+          <label for="factura-ruc">RUC</label>
+          <input type="text" id="factura-ruc" maxlength="11" inputmode="numeric" placeholder="20123456789">
+          <label for="factura-razon-social">Razón Social</label>
+          <input type="text" id="factura-razon-social" placeholder="Nombre de la empresa">
+        </div>
+
+        <p class="etiqueta-pago">Método de Pago</p>
+        <div class="grupo-botones" data-grupo="metodo-pago">
+          <button class="btn-opcion activo" data-valor="Efectivo">💵 Efectivo</button>
+          <button class="btn-opcion" data-valor="Tarjeta">💳 Tarjeta</button>
+          <button class="btn-opcion" data-valor="Yape/Plin">📱 Yape/Plin</button>
+        </div>
+
+        <!-- Solo visible cuando el método es "Efectivo" -->
+        <div class="caja-monto" id="caja-monto-recibido">
+          <label>Monto Recibido (S/)</label>
+          <input type="number" id="monto-recibido" placeholder="0.00">
+          <p class="texto-vuelto" id="texto-vuelto">Vuelto: S/ 0.00</p>
+        </div>
+
+        <!-- Solo visible cuando el método es "Yape/Plin" -->
+        <div class="caja-qr-yape" id="caja-qr-yape" style="display:none;">
+          <p class="qr-instruccion">Muestra este QR al cliente para que escanee con su app:</p>
+          <div class="qr-contenido">
+            <div id="contenedor-qr"></div>
+            <div class="qr-info">
+              <p class="qr-label">Total a pagar</p>
+              <p class="qr-monto" id="qr-monto-mostrado">S/ 0.00</p>
+              <p class="qr-numero" id="qr-numero-tienda"></p>
+            </div>
+          </div>
+          <p class="qr-nota">⚠️ Confirma en tu celular que el pago llegó antes de presionar "Cobrar"</p>
+        </div>
+      </div>
+
+      <button class="btn-cobrar">🧾 Cobrar y Generar Boleta</button>
     </div>
 
-    <div class="table-container-wrapper">
-        <table class="modern-data-table">
-            <thead>
-                <tr>
-                    <th>Producto / Descripción</th>
-                    <th>Precio Unitario</th>
-                    <th>Cant.</th>
-                    <th>Subtotal</th>
-                    <th style="width: 80px; text-align: center;">Acción</th>
-                </tr>
-            </thead>
-            <tbody id="vendedor-tabla-carrito-cuerpo">
-                </tbody>
-        </table>
+  </div>
+
+  <!-- ===== MODAL ESCÁNER DE CÓDIGO DE BARRAS ===== -->
+  <div id="modal-escaner" class="modal-escaner-overlay" style="display:none;">
+    <div class="modal-escaner-caja">
+
+      <div class="modal-escaner-cabecera">
+        <h3>📷 Escanear Código de Barras</h3>
+        <button id="btn-cerrar-escaner" class="btn-cerrar-modal">✕</button>
+      </div>
+
+      <div class="modal-escaner-selector">
+        <label for="select-camara">Cámara:</label>
+        <select id="select-camara"></select>
+        <button id="btn-iniciar-escaner" class="btn-iniciar-camara">▶ Iniciar</button>
+        <button id="btn-detener-escaner" class="btn-detener-camara" style="display:none;">⏹ Detener</button>
+      </div>
+
+      <!-- Aquí Html5Qrcode renderiza el video -->
+      <div id="lector-qr"></div>
+
+      <div id="escaner-resultado" class="escaner-resultado" style="display:none;">
+        <p id="escaner-mensaje"></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="fila-historial">
+    <div class="cabecera-historial">
+      <div>
+        <h3>🕒 Historial de Ventas</h3>
+        <p>0 ventas registradas</p>
+      </div>
+      <span class="icono-desplegar">🔽</span>
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-        <div>
-            <span style="font-size: 14px; color: #64748b; display: block; font-weight: 600;">TOTAL A PAGAR</span>
-            <strong id="vendedor-total-monto" style="font-size: 28px; color: #0f172a; font-family: sans-serif;">S/. 0.00</strong>
-        </div>
-        <div>
-            <button id="btn-vendedor-confirmar" class="action-btn-success" style="padding: 14px 32px; font-size: 15px; font-weight: bold;">
-                🟢 Confirmar Transacción Real
-            </button>
-        </div>
+    <div class="tabla-historial-contenedor">
+      <table class="tabla-historial">
+        <thead>
+          <tr>
+            <th>ID Venta</th>
+            <th>Fecha y Hora</th>
+            <th>Comprobante</th>
+            <th>Método de Pago</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-historial"></tbody>
+      </table>
     </div>
+  </div>
 
 </div>
