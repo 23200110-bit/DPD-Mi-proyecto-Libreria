@@ -5,6 +5,8 @@ import { supabaseClient } from './supabase-config.js';
 import { inicializarInventarioAdmin } from './modulos/inventario-admin.js';
 import { inicializarCompras } from './modulos/compras.js';
 import { inicializarModuloVentas } from './modulos/ventas.js';
+import { inicializarAlertas } from './modulos/alertas.js';
+import { inicializarSeguridad } from './modulos/seguridad.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const emailSalvado = localStorage.getItem('SESION_EMAIL');
@@ -58,13 +60,28 @@ async function cambiarSubVistaAdmin(subVistaID) {
             contenedorPrincipal.innerHTML = await respuesta.text();
 
             // Disparadores de lógica por módulo
-            if (subVistaID === 'inventario') {
-                inicializarInventarioAdmin();
-            } else if (subVistaID === 'compras') {
-                inicializarCompras();
-            } else if (subVistaID === 'ventas') {
-                inicializarModuloVentas();
-            }
+        if (subVistaID === 'inventario') {
+
+            inicializarInventarioAdmin();
+
+        } else if (subVistaID === 'compras') {
+
+            inicializarCompras();
+
+        } else if (subVistaID === 'ventas') {
+
+            inicializarModuloVentas();
+
+        } else if (subVistaID === 'alertas') {
+
+            inicializarAlertas();
+
+        }else if (subVistaID === 'seguridad') {
+
+            inicializarSeguridad();
+
+        }
+
 
         } else {
             contenedorPrincipal.innerHTML = `

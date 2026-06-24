@@ -1,7 +1,40 @@
-<div class="welcome-banner">
-    <h2>Seguridad y Auditoría</h2>
-    <p>Copias de respaldo del inventario e historial de acciones críticas</p>
-</div>
-<div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; color: #64748b;">
-    🛡️ Próximamente: Logs de quién modificó un precio o eliminó un registro del almacén.
+<div class="admin-subview active">
+
+    <div class="welcome-banner">
+        <h2>🛡️ Seguridad y Auditoría</h2>
+        <p>Registro de auditorías realizadas por los vendedores.</p>
+    </div>
+
+    <div class="carrito-box" style="padding:15px;overflow-x:auto;">
+
+        <table style="width:100%;">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Vendedor</th>
+                    <th>Producto</th>
+                    <th>Stock Sistema</th>
+                    <th>Stock Contado</th>
+                    <th>Diferencia</th>
+                    <th>Fecha</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="tabla-seguridad">
+
+                <tr>
+                    <td colspan="7" style="text-align:center;padding:30px;">
+                        ⏳ Cargando auditoría...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
