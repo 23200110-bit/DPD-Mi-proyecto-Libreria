@@ -1,17 +1,18 @@
+/* ==========================================================================
+   js/admin-main.js - CONTROLADOR DEL PANEL DE ADMINISTRADOR
+   ========================================================================== */
 import { supabaseClient } from './supabase-config.js';
 import { inicializarInventarioAdmin } from './modulos/inventario-admin.js';
-// 🚀 IMPORTACIÓN DEL MÓDULO NUEVO DE COMPRAS:
 import { inicializarCompras } from './modulos/compras.js';
+import { inicializarModuloVentas } from './modulos/ventas.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Verificar sesión activa
     const emailSalvado = localStorage.getItem('SESION_EMAIL');
     if (!emailSalvado) { window.location.href = "index.html"; return; }
 
     const badge = document.getElementById('session-user-badge');
     if (badge) badge.textContent = emailSalvado;
 
-    // Capturar clicks en el menú horizontal superior del Admin
     const contenedorMenu = document.querySelector('.nav-menu-options');
     if (contenedorMenu) {
         contenedorMenu.addEventListener('click', (e) => {
@@ -23,16 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Botón Salir
     const btnSalir = document.getElementById('btn-logout');
     if (btnSalir) { btnSalir.addEventListener('click', () => { logout(); }); }
 
-    // Vista por defecto al abrir el panel
     cambiarSubVistaAdmin('inicio');
 });
 
 async function cambiarSubVistaAdmin(subVistaID) {
-    // Cambiar estado visual de botones activos
     const botones = document.querySelectorAll('.nav-btn');
     botones.forEach(b => b.classList.remove('active'));
     const botonDestino = document.getElementById(`btn-nav-${subVistaID}`);
@@ -42,28 +40,37 @@ async function cambiarSubVistaAdmin(subVistaID) {
     if (!contenedorPrincipal) return;
 
     try {
-        // Concatenamos el sufijo para buscar las vistas reales del admin
-        let nombreArchivoReal = subVistaID;
+        // Determinar carpeta y nombre de archivo según la vista
+        let carpeta = 'admin';
+        let nombreArchivo = subVistaID;
+
         if (subVistaID === 'inicio' || subVistaID === 'inventario') {
-            nombreArchivoReal = `${subVistaID}-admin`;
+            nombreArchivo = `${subVistaID}-admin`;
+        } else if (subVistaID === 'ventas') {
+            // ventas.html vive en compartido, igual que en el panel vendedor
+            carpeta = 'compartido';
+            nombreArchivo = 'ventas';
         }
 
-        const respuesta = await fetch(`vistas/admin/${nombreArchivoReal}.html`);
-        
+        const respuesta = await fetch(`vistas/${carpeta}/${nombreArchivo}.html`);
+
         if (respuesta.ok) {
             contenedorPrincipal.innerHTML = await respuesta.text();
-            
-            // 🚀 DISPARADORES DE LÓGICA DINÁMICA DE LOS MÓDULOS
+
+            // Disparadores de lógica por módulo
             if (subVistaID === 'inventario') {
-                inicializarInventarioAdmin(); // Mantiene vivo tu inventario intacto
+                inicializarInventarioAdmin();
             } else if (subVistaID === 'compras') {
-                inicializarCompras(); // Despierta el formulario inteligente de compras
+                inicializarCompras();
+            } else if (subVistaID === 'ventas') {
+                inicializarModuloVentas();
             }
+
         } else {
             contenedorPrincipal.innerHTML = `
                 <div class="temporary-empty-view">
                     <h3>⚠️ Módulo en Construcción</h3>
-                    <p>El archivo "vistas/admin/${nombreArchivoReal}.html" está listo en el mapa pero vacío en disco.</p>
+                    <p>El archivo "vistas/${carpeta}/${nombreArchivo}.html" está listo en el mapa pero vacío en disco.</p>
                 </div>`;
         }
     } catch (error) {
