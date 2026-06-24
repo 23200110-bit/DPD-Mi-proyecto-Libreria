@@ -1,10 +1,12 @@
 /* ==========================================================================
-   js/admin-main.js - CONTROLADOR DEL PANEL DE ADMINISTRADOR
+    js/admin-main.js - CONTROLADOR DEL PANEL DE ADMINISTRADOR
    ========================================================================== */
 import { supabaseClient } from './supabase-config.js';
 import { inicializarInventarioAdmin } from './modulos/inventario-admin.js';
 import { inicializarCompras } from './modulos/compras.js';
 import { inicializarModuloVentas } from './modulos/ventas.js';
+// === SE AGREGA LA IMPORTACIÓN DE LA CAJA SIN TOCAR LO ANTERIOR ===
+import { inicializarModuloCaja } from './modulos/caja.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const emailSalvado = localStorage.getItem('SESION_EMAIL');
@@ -64,6 +66,9 @@ async function cambiarSubVistaAdmin(subVistaID) {
                 inicializarCompras();
             } else if (subVistaID === 'ventas') {
                 inicializarModuloVentas();
+            // === SE AGREGA EL DISPARADOR DE LA CAJA PARA QUE TU BOTÓN POR FIN RESPONDA ===
+            } else if (subVistaID === 'caja') {
+                inicializarModuloCaja();
             }
 
         } else {
