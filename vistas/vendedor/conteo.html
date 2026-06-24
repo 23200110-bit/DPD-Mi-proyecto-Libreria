@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIVEP - Conteo Físico</title>
+    <link rel="stylesheet" href="../../style.css"> 
+</head>
+<body>
+
+    <main class="container-modulo" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
+        <div class="header-modulo" style="margin-bottom: 25px;">
+            <h1 style="font-size: 2rem; color: #0f172a; margin-bottom: 5px;">Conteo Físico</h1>
+            <p style="color: #64748b; font-size: 1.1rem;">Registra el conteo físico de productos para comparar con el sistema</p>
+        </div>
+
+        <div class="card-conteo" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                <div style="background: #e0f2fe; color: #0284c7; padding: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    📋
+                </div>
+                <div>
+                    <h3 style="font-size: 1.25rem; color: #1e293b; margin: 0;">Registrar Conteo Físico</h3>
+                    <p style="color: #64748b; margin: 2px 0 0 0; font-size: 0.95rem;">Selecciona el producto evaluado en tienda</p>
+                </div>
+            </div>
+
+            <form id="form-conteo-fisico">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="select-producto-conteo" style="display: block; font-weight: 500; color: #334155; margin-bottom: 8px;">Selecciona un Inventario</label>
+                    <select id="select-producto-conteo" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background-color: #fff; font-size: 1rem; color: #1e293b;">
+                        <option value="">Cargando productos...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="input-stock-contado" style="display: block; font-weight: 500; color: #334155; margin-bottom: 8px;">Stock Contado</label>
+                    <input type="number" id="input-stock-contado" placeholder="0" min="0" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; color: #1e293b; box-sizing: border-box;">
+                </div>
+
+                <button type="submit" id="btn-registrar-conteo" style="background: #0056b3; color: white; border: none; padding: 12px 24px; font-size: 1rem; font-weight: 500; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    💾 Registrar Conteo
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script type="module">
+        import { inicializarModuloConteo } from '../../js/modulos/conteo.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarModuloConteo();
+        });
+    </script>
+</body>
+</html>
