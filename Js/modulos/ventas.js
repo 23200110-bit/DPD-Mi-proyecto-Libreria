@@ -6,7 +6,7 @@ import { supabaseClient } from '../supabase-config.js';
 const IGV_PORCENTAJE = 0.18;
 
 // ⬇ Cambia este número por el celular registrado en Yape/Plin de la tienda
-const NUMERO_YAPE_TIENDA = '923310991';
+const NUMERO_YAPE_TIENDA = '987654321';
 
 let CARRITO = [];
 let PRODUCTOS = [];
@@ -80,6 +80,19 @@ export async function inicializarModuloVentas() {
     const btnCobrar = document.querySelector('.btn-cobrar');
     if (btnCobrar) {
         btnCobrar.addEventListener('click', confirmarVenta);
+    }
+
+    // Toggle del historial de ventas
+    const cabeceraHistorial = document.querySelector('.cabecera-historial');
+    if (cabeceraHistorial) {
+        cabeceraHistorial.addEventListener('click', () => {
+            const tabla     = document.querySelector('.tabla-historial-contenedor');
+            const icono     = document.querySelector('.icono-desplegar');
+            const abierto   = tabla.style.display !== 'none';
+
+            tabla.style.display = abierto ? 'none' : '';
+            if (icono) icono.textContent = abierto ? '🔼' : '🔽';
+        });
     }
 }
 
@@ -309,44 +322,19 @@ function actualizarQRSiVisible() {
 }
 
 /**
- * Genera el QR usando la librería QRCode.js (cargada en vendedor.html)
- * El contenido del QR es el número de celular de la tienda.
- * El cliente lo escanea con Yape o Plin y ve el número pre-cargado.
+ * Muestra el número de Yape/Plin de la tienda y el monto a cobrar.
+ * Nota: Yape y Plin usan QR propietarios que requieren registro como
+ * comercio afiliado. Para tiendas pequeñas, mostrar el número es la
+ * solución práctica — el cliente lo busca en su app manualmente.
  */
 function generarQR() {
-    const contenedorQR = document.getElementById('contenedor-qr');
-    const elMonto      = document.getElementById('qr-monto-mostrado');
-    const elNumero     = document.getElementById('qr-numero-tienda');
+    const elMonto = document.getElementById('qr-monto-mostrado');
 
-    if (!contenedorQR) return;
+    // Recalcular el total directo del carrito para asegurar que siempre sea correcto
+    const subtotal = CARRITO.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    const total    = subtotal * (1 + IGV_PORCENTAJE);
 
-    // Actualizar monto visible junto al QR
-    if (elMonto) elMonto.textContent = `S/ ${totalActual.toFixed(2)}`;
-    if (elNumero) elNumero.textContent = `📱 ${NUMERO_YAPE_TIENDA}`;
-
-    // Limpiar QR anterior
-    contenedorQR.innerHTML = '';
-
-    // Verificar que la librería esté disponible
-    if (typeof QRCode === 'undefined') {
-        contenedorQR.innerHTML = `
-            <p style="color:#dc2626;font-size:13px;">
-                ⚠️ Librería QR no disponible.<br>
-                Agrega el script de QRCode.js en vendedor.html
-            </p>`;
-        return;
-    }
-
-    // El QR codifica el número de celular de la tienda
-    // Yape y Plin reconocen números de celular directamente
-    new QRCode(contenedorQR, {
-        text: NUMERO_YAPE_TIENDA,
-        width: 140,
-        height: 140,
-        colorDark: '#1a1a2e',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-    });
+    if (elMonto) elMonto.textContent = `S/ ${total.toFixed(2)}`;
 }
 
 /* ==========================================================================
