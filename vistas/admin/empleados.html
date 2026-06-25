@@ -2,6 +2,60 @@
     <h2>Gestión de Empleados</h2>
     <p>Administra los accesos y roles de tus vendedores autorizados</p>
 </div>
-<div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; color: #64748b;">
-    👥 Próximamente: Registro de nuevos usuarios y asignación de contraseñas de acceso restringido.
+
+<div style="background:white;padding:24px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:20px;">
+
+    <h3 style="margin-bottom:15px;">Registrar Empleado</h3>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;">
+
+        <input
+            id="empleado-nombre"
+            type="text"
+            placeholder="Nombre completo">
+
+        <input
+            id="empleado-email"
+            type="email"
+            placeholder="Correo electrónico">
+
+        <select id="empleado-rol">
+            <option value="empleado">Empleado</option>
+            <option value="admin">Administrador</option>
+        </select>
+
+        <button id="btn-guardar-empleado">
+            Guardar
+        </button>
+
+    </div>
+
+</div>
+
+<div style="background:white;padding:24px;border-radius:12px;border:1px solid #e2e8f0;">
+
+    <h3 style="margin-bottom:15px;">Lista de Empleados</h3>
+
+    <table style="width:100%;border-collapse:collapse;">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Fecha Registro</th>
+            </tr>
+        </thead>
+
+        <tbody id="tabla-empleados">
+            <tr>
+                <td colspan="5" style="text-align:center;padding:20px;">
+                    Cargando empleados...
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
 </div>
