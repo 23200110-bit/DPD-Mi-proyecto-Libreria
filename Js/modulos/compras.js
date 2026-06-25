@@ -23,7 +23,10 @@ function configurarEventosCompras() {
         formCompra.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const codigo = document.getElementById('compra-codigo').value.trim();
+            // Mantenemos la lectura limpia del nuevo campo numérico
+            const codigoInput = document.getElementById('compra-codigo').value.trim();
+            const codigo = codigoInput ? parseInt(codigoInput) : null;
+            
             const nombre = document.getElementById('compra-nombre').value.trim();
             const marca = document.getElementById('compra-marca').value.trim();
             const categoria = document.getElementById('compra-categoria').value;
@@ -65,7 +68,7 @@ function configurarEventosCompras() {
 
                     if (errU) throw errU;
                 } else {
-                    // EL PRODUCTO ES NUEVO: Estructura limpia dejando que el ID se cree solo en Supabase
+                    // EL PRODUCTO ES NUEVO
                     const productoNuevoPayload = {
                         nombre,
                         categoria,
@@ -80,7 +83,7 @@ function configurarEventosCompras() {
                     const { data: nuevoProd, error: errI } = await supabaseClient
                         .from('productos')
                         .insert([productoNuevoPayload])
-                        .select('id'); // Pedimos explícitamente solo el ID asignado por el SERIAL
+                        .select('id');
 
                     if (errI) throw errI;
                     

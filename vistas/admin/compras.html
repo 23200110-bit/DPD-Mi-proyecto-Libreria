@@ -1,37 +1,35 @@
-<div class="admin-subview active">
-    <div class="welcome-banner">
+<div class="admin-subview active" style="max-width: 1000px; margin: 40px auto; padding: 0 20px; box-sizing: border-box;">
+    <div class="welcome-banner" style="margin-bottom: 25px;">
         <h2>📦 Registro de Compras (Ingreso de Mercadería)</h2>
         <p>Escanea o introduce los artículos recibidos para actualizar el stock e insertar el historial de costos.</p>
     </div>
 
-    <div class="operaciones-box" style="margin-bottom: 20px; padding: 20px !important;">
-        <h3 style="margin-top: 0; color: #0f172a; font-size: 16px;">📷 Toca para escanear la caja</h3>
+    <div class="operaciones-box" style="margin-bottom: 25px; padding: 25px !important; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; color: #0f172a; font-size: 18px;">📷 Toca para escanear la caja</h3>
         <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">Detecta el código de barras para saber si el artículo ya existe en el sistema.</p>
-        <button type="button" id="btn-compras-escanear" class="btn-action" style="width: auto !important; padding: 10px 20px !important; background-color: #475569;">
+        <button type="button" id="btn-compras-escanear" class="btn-action" style="width: auto !important; padding: 10px 20px !important; background-color: #475569; color: white; border: none; border-radius: 8px; cursor: pointer;">
             🔍 Iniciar Escáner de Barras
         </button>
     </div>
 
-    <div class="carrito-box" style="padding: 25px 30px !important;">
+    <div class="carrito-box" style="padding: 25px 30px !important; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         <h3 style="margin-top: 0; color: #0f172a; font-size: 18px;">📦 Datos de Entrada</h3>
         <p style="color: #64748b; font-size: 13px; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">Completa la información del lote recibido</p>
-
-        <input type="hidden" id="compra-codigo">
 
         <form id="form-registro-compra" style="display: flex; flex-direction: column; gap: 20px;">
             <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px;">Nombre del Producto *</label>
-                <input type="text" id="compra-nombre" placeholder="Ej: Cuaderno Stanford A4" required style="width: 100% !important;">
+                <input type="text" id="compra-nombre" placeholder="Ej: Cuaderno Stanford A4" required style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
             </div>
 
             <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px;">Marca</label>
-                <input type="text" id="compra-marca" placeholder="Ej: Stanford" style="width: 100% !important;">
+                <input type="text" id="compra-marca" placeholder="Ej: Stanford" style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
             </div>
 
             <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px;">Categoría *</label>
-                <select id="compra-categoria" required style="width: 100% !important; height: 42px;">
+                <select id="compra-categoria" required style="width: 100% !important; height: 46px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background-color: #fff; box-sizing: border-box;">
                     <option value="" disabled selected>Selecciona una categoría</option>
                     <option value="Utiles Escolares">Útiles Escolares</option>
                     <option value="Oficina">Oficina y Escritorio</option>
@@ -42,28 +40,33 @@
 
             <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px;">Cantidad Recibida *</label>
-                <input type="number" id="compra-stock" min="1" value="1" required style="width: 100% !important;">
+                <input type="number" id="compra-stock" min="1" value="1" required style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                     <label style="display: block; font-weight: 600; margin-bottom: 8px;">Precio de Costo (S/) *</label>
-                    <input type="number" id="compra-costo" step="0.01" min="0" placeholder="0.00" required style="width: 100% !important;">
+                    <input type="number" id="compra-costo" step="0.01" min="0" placeholder="0.00" required style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
                 </div>
                 <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                     <label style="display: block; font-weight: 600; margin-bottom: 8px;">Precio de Venta (S/) *</label>
-                    <input type="number" id="compra-venta" step="0.01" min="0" placeholder="0.00" required style="width: 100% !important;">
+                    <input type="number" id="compra-venta" step="0.01" min="0" placeholder="0.00" required style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
                 </div>
             </div>
 
             <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px;">Stock Mínimo para Alerta *</label>
-                <input type="number" id="compra-minimo" min="1" value="10" required style="width: 100% !important;">
+                <input type="number" id="compra-minimo" min="1" value="10" required style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
+            </div>
+
+            <div class="form-group-vendedor" style="margin-bottom: 0 !important;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Código de Barras</label>
+                <input type="number" id="compra-codigo" placeholder="Ej: 775123456789" style="width: 100% !important; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box;">
             </div>
 
             <div style="display: flex; gap: 15px; margin-top: 15px; justify-content: flex-end;">
-                <button type="reset" id="btn-compras-limpiar" class="btn-action" style="width: auto !important; background-color: #ef4444; padding: 12px 25px !important;">🔄 Limpiar</button>
-                <button type="submit" class="btn-action" style="width: auto !important; background-color: #0284c7; padding: 12px 30px !important;">💾 Guardar Compra</button>
+                <button type="reset" id="btn-compras-limpiar" class="btn-action" style="width: auto !important; background-color: #ef4444; color: white; border: none; padding: 12px 25px !important; border-radius: 8px; cursor: pointer;">🔄 Limpiar</button>
+                <button type="submit" class="btn-action" style="width: auto !important; background-color: #0284c7; color: white; border: none; padding: 12px 30px !important; border-radius: 8px; cursor: pointer;">💾 Guardar Compra</button>
             </div>
         </form>
     </div>

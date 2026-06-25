@@ -21,6 +21,7 @@ async function cargarDatosInventarioGlobal() {
                 precio_venta,
                 stock_actual,
                 stock_minimo_alerta,
+                codigo_barras,
                 compras (
                     id_compra,
                     precio_costo
@@ -55,7 +56,7 @@ function renderizarTablaAdmin(busqueda = "", filtroStock = "todos") {
     });
 
     if (filtrados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">No se encontraron productos.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 30px; color: #94a3b8; font-size: 14px;">No se encontraron productos coincidentes.</td></tr>`;
         return;
     }
 
@@ -64,9 +65,9 @@ function renderizarTablaAdmin(busqueda = "", filtroStock = "todos") {
         const min = p.stock_minimo_alerta || 10;
         
         // Calculamos el Estado Visual
-        let badge = `<span class="alert-tag status-pill badge-disponible">Óptimo</span>`;
-        if (stock === 0) badge = `<span class="alert-tag tag-danger">Agotado</span>`;
-        else if (stock <= min) badge = `<span class="alert-tag tag-warning">Bajo Stock</span>`;
+        let badge = `<span class="alert-tag status-pill badge-disponible" style="display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">Óptimo</span>`;
+        if (stock === 0) badge = `<span class="alert-tag tag-danger" style="display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">Agotado</span>`;
+        else if (stock <= min) badge = `<span class="alert-tag tag-warning" style="display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">Bajo Stock</span>`;
 
         // Lógica del JOIN: Extraemos el precio de costo del último registro en compras
         let costoFinal = 0.00;
@@ -76,18 +77,26 @@ function renderizarTablaAdmin(busqueda = "", filtroStock = "todos") {
             costoFinal = Number(comprasOrdenadas[0].precio_costo) || 0.00;
         }
 
+        // Renderizado Senior con espaciados amplios y limpios
         return `
-            <tr>
-                <td>${p.id}</td> <td>${p.nombre}</td>
-                <td>${p.marca || '-'}</td>
-                <td>${p.categoria}</td>
-                <td style="color: #475569;">S/. ${costoFinal.toFixed(2)}</td> <td style="font-weight: 600;">S/. ${(Number(p.precio_venta) || 0).toFixed(2)}</td>
-                <td style="text-align: center; font-weight: bold;">${stock}</td>
-                <td>${badge}</td>
-                <td>
-                    <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
-                        <button class="btn-action" style="width: 32px !important; height: 32px !important; padding: 0 !important; background-color: #0284c7; font-size: 12px; display: flex; align-items: center; justify-content: center; border-radius: 6px;" title="Editar">✏️</button>
-                        <button class="btn-action" style="width: 32px !important; height: 32px !important; padding: 0 !important; background-color: #dc2626; font-size: 12px; display: flex; align-items: center; justify-content: center; border-radius: 6px;" title="Eliminar">🗑️</button>
+            <tr style="background: #ffffff; transition: background 0.2s;">
+                <td style="padding: 14px 16px; color: #64748b; font-weight: 500; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${p.id}</td>
+                <td style="padding: 14px 16px; color: #1e293b; font-weight: 600; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${p.nombre}</td>
+                <td style="padding: 14px 16px; color: #475569; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${p.marca || '-'}</td>
+                <td style="padding: 14px 16px; color: #475569; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${p.categoria}</td>
+                <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                    <span style="background-color: #f1f5f9; color: #334155; font-family: monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.02em;">
+                        ${p.codigo_barras || '—'}
+                    </span>
+                </td>
+                <td style="padding: 14px 16px; text-align: right; color: #64748b; font-size: 14px; font-family: 'Courier New', Courier, monospace; border-bottom: 1px solid #f1f5f9;">S/. ${costoFinal.toFixed(2)}</td>
+                <td style="padding: 14px 16px; text-align: right; color: #0f172a; font-weight: 700; font-size: 14px; font-family: 'Courier New', Courier, monospace; border-bottom: 1px solid #f1f5f9;">S/. ${(Number(p.precio_venta) || 0).toFixed(2)}</td>
+                <td style="padding: 14px 16px; text-align: center; color: #0f172a; font-weight: 700; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${stock}</td>
+                <td style="padding: 14px 16px; text-align: center; border-bottom: 1px solid #f1f5f9;">${badge}</td>
+                <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                    <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                        <button class="btn-action" style="width: 32px !important; height: 32px !important; padding: 0 !important; background-color: #0284c7; font-size: 12px; display: flex; align-items: center; justify-content: center; border-radius: 6px; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);" title="Editar">✏️</button>
+                        <button class="btn-action" style="width: 32px !important; height: 32px !important; padding: 0 !important; background-color: #dc2626; font-size: 12px; display: flex; align-items: center; justify-content: center; border-radius: 6px; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);" title="Eliminar">🗑️</button>
                     </div>
                 </td>
             </tr>
