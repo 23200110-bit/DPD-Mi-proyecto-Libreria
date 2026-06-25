@@ -9,6 +9,8 @@ import { inicializarModuloVentas } from './modulos/ventas.js';
 import { inicializarAlertas } from './modulos/alertas.js';
 import { inicializarSeguridad } from './modulos/seguridad.js';
 import { inicializarModuloCaja } from './modulos/caja.js';
+import { inicializarEmpleados } from './modulos/empleados.js';
+import { inicializarReportes } from './modulos/reportes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const emailSalvado = localStorage.getItem('SESION_EMAIL');
@@ -100,6 +102,14 @@ async function cambiarSubVistaAdmin(subVistaID) {
 
                 inicializarModuloCaja();
 
+            } else if (subVistaID === 'empleados') {
+
+                inicializarEmpleados();
+
+            } else if (subVistaID === 'reportes') {
+
+                inicializarReportes();
+               
             }
 
         } else {
