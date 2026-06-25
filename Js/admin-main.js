@@ -39,6 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Manejo de enlaces dentro del contenido (ej. "Ver todas las alertas")
+    // Si hay enlaces con la clase .alerts-button dentro del main, redirigimos
+    // usando la misma función SPA `cambiarSubVistaAdmin` para evitar navegación
+    // completa y mantener el estado del panel.
+    document.body.addEventListener('click', (e) => {
+        const enlace = e.target.closest && e.target.closest('.alerts-button');
+        if (!enlace) return;
+        e.preventDefault();
+        // Forzamos la carga del módulo de alertas
+        cambiarSubVistaAdmin('alertas');
+    });
+
     cambiarSubVistaAdmin('inicio');
 });
 
