@@ -1,115 +1,120 @@
-<div class="welcome-banner">
-    <h2>Bienvenido a Librería El Lápiz de Oro</h2>
-    <p>Resumen de tu negocio de hoy</p>
-</div>
+﻿<main class="dashboard-page">
+    <section class="dashboard-hero">
+        <span class="section-label">Inventario</span>
+        <h1>Bienvenido a Librería El Lápiz de Oro</h1>
+        <p class="section-subtitle">Resumen de tu negocio de hoy</p>
+    </section>
 
-<div class="metrics-dashboard-grid">
-    <div class="metric-card card-blue">
-        <div class="metric-card-header">
-            <span>Total Productos</span>
-            <span class="metric-icon">📦</span>
-        </div>
-        <div class="metric-card-body">
-            <h3>38</h3>
-            <p>productos registrados</p>
-        </div>
-    </div>
+    <section class="kpi-grid" aria-label="Indicadores clave">
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--blue" aria-hidden="true">📦</span>
+                <span class="kpi-card__title">Total Productos</span>
+            </div>
+            <p id="total-productos-count" class="kpi-card__value">38</p>
+            <p class="kpi-card__description">productos registrados</p>
+        </article>
 
-    <div class="metric-card card-yellow">
-        <div class="metric-card-header">
-            <span>Stock Bajo</span>
-            <span class="metric-icon">⚠️</span>
-        </div>
-        <div class="metric-card-body">
-            <h3>5</h3>
-            <p>productos por reponer</p>
-        </div>
-    </div>
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--orange" aria-hidden="true">⚠️</span>
+                <span class="kpi-card__title">Stock Bajo</span>
+            </div>
+            <p id="stock-bajo-count" class="kpi-card__value kpi-card__value--orange">5</p>
+            <p class="kpi-card__description">productos por reponer</p>
+        </article>
 
-    <div class="metric-card card-lightblue">
-        <div class="metric-card-header">
-            <span>Sin Movimiento</span>
-            <span class="metric-icon">📉</span>
-        </div>
-        <div class="metric-card-body">
-            <h3>3</h3>
-            <p>productos estancados</p>
-        </div>
-    </div>
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--blue" aria-hidden="true">📉</span>
+                <span class="kpi-card__title">Sin Movimiento</span>
+            </div>
+            <p id="sin-movimiento-count" class="kpi-card__value kpi-card__value--blue">3</p>
+            <p class="kpi-card__description">productos estancados</p>
+        </article>
 
-    <div class="metric-card card-orange">
-        <div class="metric-card-header">
-            <span>Capital en Stock</span>
-            <span class="metric-icon"> S/. </span>
-        </div>
-        <div class="metric-card-body">
-            <h3>S/. 6257.00</h3>
-            <p>invertido en productos</p>
-        </div>
-    </div>
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--gold" aria-hidden="true">💰</span>
+                <span class="kpi-card__title">Capital en Stock</span>
+            </div>
+            <p id="capital-stock-count" class="kpi-card__value kpi-card__value--gold">S/ 6257.00</p>
+            <p class="kpi-card__description">invertido en productos</p>
+        </article>
 
-    <div class="metric-card card-green">
-        <div class="metric-card-header">
-            <span>Ventas de Hoy</span>
-            <span class="metric-icon"> S/. </span>
-        </div>
-        <div class="metric-card-body">
-            <h3 class="text-green-strong">S/. 0.00</h3>
-            <p>en ventas totales</p>
-        </div>
-    </div>
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--green" aria-hidden="true">💵</span>
+                <span class="kpi-card__title">Ventas de Hoy</span>
+            </div>
+            <p id="ventas-hoy-count" class="kpi-card__value kpi-card__value--green">S/ 0.00</p>
+            <p class="kpi-card__description">en ventas totales</p>
+        </article>
 
-    <div class="metric-card card-teal">
-        <div class="metric-card-header">
-            <span>Ganancias de Hoy</span>
-            <span class="metric-icon">📈</span>
-        </div>
-        <div class="metric-card-body">
-            <h3 class="text-blue-strong">S/. 0.00</h3>
-            <p>ganancia neta</p>
-        </div>
-    </div>
-</div>
+        <article class="kpi-card">
+            <div class="kpi-card__header">
+                <span class="kpi-icon kpi-icon--blue" aria-hidden="true">📈</span>
+                <span class="kpi-card__title">Ganancias de Hoy</span>
+            </div>
+            <p id="ganancias-hoy-count" class="kpi-card__value kpi-card__value--blue">S/ 0.00</p>
+            <p class="kpi-card__description">ganancia neta</p>
+        </article>
+    </section>
 
-<div class="alerts-panel-container">
-    <div class="alerts-panel-header">
-        <h3>Alertas Activas</h3>
-        <span class="alerts-counter-badge-red">8 alertas</span>
-    </div>
-    <p class="alerts-panel-subtitle">Situaciones que requieren tu atención</p>
+    <section class="alerts-panel" aria-labelledby="alerts-title">
+        <header class="alerts-panel__header">
+            <div>
+                <p class="alerts-panel__eyebrow">Alertas Activas</p>
+                <h2 id="alerts-title">Situaciones que requieren tu atención</h2>
+            </div>
+            <span id="active-alerts-badge" class="alerts-badge alerts-badge--red">8 alertas</span>
+        </header>
 
-    <div class="alerts-list-wrapper">
-        <div class="alert-item-row alert-warning">
-            <div class="alert-item-left">
-                <span class="alert-status-icon">⚠️</span>
-                <div class="alert-item-details">
+        <ol class="alerts-list">
+            <li class="alert-item">
+                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
+                <div class="alert-item__content">
                     <strong>Lapicero Pilot G2 0.5 negro</strong>
-                    <span>Stock CRÍTICO - Solo quedan 2 unidades</span>
+                    <p>Stock CRÍTICO - Solo quedan 2 unidades</p>
                 </div>
-            </div>
-            <span class="badge-alert-label label-warning">Stock Bajo</span>
-        </div>
-
-        <div class="alert-item-row alert-danger">
-            <div class="alert-item-left">
-                <span class="alert-status-icon">🛑</span>
-                <div class="alert-item-details">
+                <span id="alert-badge-1" class="alert-badge alert-badge--orange">Stock Bajo</span>
+            </li>
+            <li class="alert-item">
+                <span class="alert-item__icon alert-item__icon--red" aria-hidden="true">⛔</span>
+                <div class="alert-item__content">
                     <strong>Plumón Artesco delgado x10</strong>
-                    <span>AGOTADO - Sin stock disponible</span>
+                    <p>AGOTADO - Sin stock disponible</p>
                 </div>
-            </div>
-            <span class="badge-alert-label label-danger">Agotado</span>
-        </div>
-
-        <div class="alert-item-row alert-danger">
-            <div class="alert-item-left">
-                <span class="alert-status-icon">🛑</span>
-                <div class="alert-item-details">
+                <span id="alert-badge-2" class="alert-badge alert-badge--red">Agotado</span>
+            </li>
+            <li class="alert-item">
+                <span class="alert-item__icon alert-item__icon--red" aria-hidden="true">⛔</span>
+                <div class="alert-item__content">
                     <strong>Témperas Artesco x6 colores</strong>
-                    <span>AGOTADO - Sin stock disponible</span>
+                    <p>AGOTADO - Sin stock disponible</p>
                 </div>
-            </div>
-            <span class="badge-alert-label label-danger">Agotado</span>
+                <span id="alert-badge-3" class="alert-badge alert-badge--red">Agotado</span>
+            </li>
+            <li class="alert-item">
+                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
+                <div class="alert-item__content">
+                    <strong>Cuaderno Deluxe tapa dura A5</strong>
+                    <p>Stock bajo - Quedan 3 unidades</p>
+                </div>
+                <span id="alert-badge-4" class="alert-badge alert-badge--orange">Stock Bajo</span>
+            </li>
+            <li class="alert-item">
+                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
+                <div class="alert-item__content">
+                    <strong>Plastilina Artesco x10 colores</strong>
+                    <p>Stock bajo - Quedan 5 unidades</p>
+                </div>
+                <span id="alert-badge-5" class="alert-badge alert-badge--orange">Stock Bajo</span>
+            </li>
+        </ol>
+
+        <div class="alerts-panel__footer">
+            <a class="alerts-button" href="alertas.html">Ver todas las alertas <span aria-hidden="true">→</span></a>
         </div>
-    </div>
-</div>
+    </section>
+</main>
