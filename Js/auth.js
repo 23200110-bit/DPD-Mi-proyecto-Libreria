@@ -1,5 +1,5 @@
 /* ==========================================================================
-   js/auth.js - CEREBRO DE AUTENTICACIÓN Y ROLES (INDEX.HTML)
+   js/auth.js - CEREBRO DE AUTENTICACIÓN Y ROLES BLINDADO (INDEX.HTML)
    ========================================================================== */
 import { supabaseClient } from './supabase-config.js';
 
@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Registrar usuario en la autenticación de Supabase
             let { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
@@ -94,6 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorRegistro.style.display = "block";
                 }
             } else {
+                try {
+                    // Sincronizamos guardando al nuevo usuario también en tu tabla de 'empleados'
+                    await supabaseClient
+                        .from('empleados')
+                        .insert([{ nombre_completo: nombre, email: email, rol: rolActual }]);
+                } catch (dbErr) {
+                    console.error("Error al registrar en tabla empleados:", dbErr);
+                }
+
                 alert(`✅ Personal registrado correctamente: ${nombre}`);
                 formRegistro.reset();
                 mostrarPantallaAuth('login');
@@ -101,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // FORMULARIO DE LOGIN
+    // FORMULARIO DE LOGIN BLINDADO CON VERIFICACIÓN DE ROL REAL
     const formLogin = document.getElementById('loginForm');
     const errorLogin = document.getElementById('login-error');
 
@@ -112,8 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
-            const rolSeleccionado = localStorage.getItem('ROL_ELEGIDO');
+            const rolSeleccionado = localStorage.getItem('ROL_ELEGIDO'); // 'admin' o 'vendedor'
 
+            // 1. Intentar inicio de sesión por credenciales generales
             let { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -124,13 +135,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorLogin.textContent = "❌ Credenciales inválidas.";
                     errorLogin.style.display = "block";
                 }
-            } else {
+                return;
+            }
+
+            // 2. VERIFICACIÓN CRÍTICA DE SEGURIDAD: Consultar el rol real en la tabla 'empleados'
+            try {
+                const { data: empleado, error: empleadoError } = await supabaseClient
+                    .from('empleados')
+                    .select('rol')
+                    .eq('email', email)
+                    .single();
+
+                if (empleadoError || !empleado) {
+                    // Si no se encuentra en la tabla de empleados por seguridad abortamos
+                    await supabaseClient.auth.signOut();
+                    if (errorLogin) {
+                        errorLogin.textContent = "⚠️ Usuario no autorizado o sin rol asignado.";
+                        errorLogin.style.display = "block";
+                    }
+                    return;
+                }
+
+                // Estandarizamos el término 'vendedor' si en tu DB guardaste 'empleado'
+                const rolRealEnBaseDatos = empleado.rol === 'empleado' ? 'vendedor' : empleado.rol;
+
+                // 3. Comparar el rol real contra la tarjeta que seleccionó en la interfaz
+                if (rolRealEnBaseDatos !== rolSeleccionado) {
+                    // Forzamos el cierre de sesión inmediato en Supabase por suplantación de rol
+                    await supabaseClient.auth.signOut();
+                    if (errorLogin) {
+                        errorLogin.textContent = `🚫 Acceso denegado. Este correo no tiene permisos de ${rolSeleccionado === 'admin' ? 'Administrador' : 'Empleado'}.`;
+                        errorLogin.style.display = "block";
+                    }
+                    return;
+                }
+
+                // Si todo coincide de forma transparente, se otorga acceso oficial
                 localStorage.setItem('SESION_EMAIL', email);
-                // REPARADO: Usamos location.replace al cambiar de ventana para que limpie la caché visual del navegador y no arrastre menús activos
+                
                 if (rolSeleccionado === 'admin') {
                     window.location.replace("admin.html");
                 } else {
                     window.location.replace("vendedor.html");
+                }
+
+            } catch (errDb) {
+                await supabaseClient.auth.signOut();
+                if (errorLogin) {
+                    errorLogin.textContent = "❌ Error interno de verificación.";
+                    errorLogin.style.display = "block";
                 }
             }
         });

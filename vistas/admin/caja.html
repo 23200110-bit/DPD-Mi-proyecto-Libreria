@@ -1,7 +1,317 @@
-<div class="welcome-banner">
-    <h2>Arqueo y Cierre de Caja</h2>
-    <p>Monitorea la apertura, el flujo de efectivo y los cierres diarios de caja</p>
-</div>
-<div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; color: #64748b;">
-    💵 Próximamente: Control de descuadres de caja y retiros de efectivo autorizados.
+<style>
+    /* Estilos forzados para garantizar que ocupe todo el ancho disponible */
+    .caja-modulo-wrapper {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #f1f5f9; /* Fondo gris azulado moderno para dar vida al panel */
+        min-height: 100vh;
+    }
+
+    .caja-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        margin-bottom: 24px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .caja-header-flex {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .icon-box-avatar {
+        background: #e0f2fe;
+        color: #0284c7;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Distribución en rejilla ancha de 4 columnas para las métricas principales */
+    .caja-grid-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .metric-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* Fondos rellenados por completo con degradados elegantes y bordes definidos */
+    .border-primary-caja { 
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; 
+        border-left: 6px solid #3b82f6 !important;
+    }
+    .border-success-caja { 
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important; 
+        border-left: 6px solid #10b981 !important;
+    }
+    .border-info-caja { 
+        background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%) !important; 
+        border-left: 6px solid #06b6d4 !important;
+    }
+    .border-purple-caja { 
+        background: linear-gradient(135deg, #f5f3ff 0%, #edd8ff 100%) !important; 
+        border-left: 6px solid #a855f7 !important;
+    }
+    .border-secondary-caja { 
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important; 
+        border-left: 6px solid #64748b !important;
+    }
+    .border-warning-caja { 
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important; 
+        border-left: 6px solid #f59e0b !important;
+    }
+    .border-danger-caja { 
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important; 
+        border-left: 6px solid #ef4444 !important;
+    }
+
+    .metric-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+        display: block;
+    }
+
+    .metric-value {
+        font-size: 26px;
+        font-weight: 700;
+        margin-top: 8px;
+        margin-bottom: 0;
+        color: #1e293b;
+    }
+
+    /* Formulario de inputs en línea */
+    .caja-form-inline {
+        display: flex;
+        gap: 16px;
+        align-items: flex-end;
+        width: 100%;
+    }
+
+    .form-group-caja {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label-caja {
+        font-size: 14px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .form-control-caja {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
+        background: #fff;
+    }
+
+    .form-control-caja-lg {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        box-sizing: border-box;
+    }
+
+    /* Botones Modernos */
+    .btn-caja-primary {
+        background: #0284c7;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 28px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+    .btn-caja-primary:hover { background: #0369a1; }
+
+    .btn-caja-danger {
+        background: #dc2626;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .btn-caja-danger:hover { background: #b91c1c; }
+
+    /* Contenedor de Balance Esperado */
+    .caja-balance-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .caja-balance-monto {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    /* Alertas de Cuadre */
+    .alert-success-caja, .alert-sobrante-caja, .alert-faltante-caja {
+        padding: 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        margin-top: 10px;
+    }
+    .alert-success-caja { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .alert-sobrante-caja { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+    .alert-faltante-caja { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+
+    /* Clases de texto heredadas */
+    .text-success { color: #065f46 !important; }
+    .text-info { color: #0891b2 !important; }
+    .text-purple { color: #7e22ce !important; }
+    .text-warning { color: #b45309 !important; }
+    .text-danger { color: #b91c1c !important; }
+</style>
+
+<div class="caja-modulo-wrapper">
+    <h2 style="font-weight: 800; color: #0f172a; margin-bottom: 2px;">Cierre de Caja</h2>
+    <p style="color: #64748b; margin-bottom: 24px;">Gestiona la apertura y cierre de caja diaria con Supabase</p>
+
+    <div id="section-apertura" class="caja-card">
+        <div class="caja-header-flex" style="margin-bottom: 16px;">
+            <div class="icon-box-avatar"><i class="bi bi-wallet2"></i></div>
+            <div>
+                <h4 style="font-weight: 700; margin: 0; color: #1e293b;">Apertura de Caja</h4>
+                <p style="color: #64748b; margin: 0; font-size: 14px;">Establece el fondo de caja inicial para las operaciones del día</p>
+            </div>
+        </div>
+        <div class="caja-form-inline" style="margin-top: 20px;">
+            <div class="form-group-caja">
+                <label for="input-monto-apertura" class="form-label-caja">Monto de Apertura Inicial (S/)</label>
+                <input type="number" id="input-monto-apertura" class="form-control-caja-lg" placeholder="0.00" min="0" step="0.01">
+            </div>
+            <button id="btn-abrir-caja" class="btn-caja-primary">
+                <i class="bi bi-check-circle" style="margin-right: 8px;"></i>Abrir Caja del Día
+            </button>
+        </div>
+    </div>
+
+    <div id="section-operativa" style="display: none;">
+        
+        <div class="caja-grid-cards">
+            <div class="metric-card border-primary-caja">
+                <span class="metric-label" style="color: #1d4ed8;">Monto de Apertura</span>
+                <h3 id="txt-card-apertura" class="metric-value" style="color: #1e3a8a;">S/ 0.00</h3>
+            </div>
+            <div class="metric-card border-success-caja">
+                <span class="metric-label text-success">Ventas Efectivo</span>
+                <h3 id="txt-card-efectivo" class="metric-value text-success">S/ 0.00</h3>
+            </div>
+            <div class="metric-card border-info-caja">
+                <span class="metric-label text-info">Ventas Tarjeta</span>
+                <h3 id="txt-card-tarjeta" class="metric-value text-info">S/ 0.00</h3>
+            </div>
+            <div class="metric-card border-purple-caja">
+                <span class="metric-label text-purple">Ventas Yape/Plin</span>
+                <h3 id="txt-card-digital" class="metric-value text-purple">S/ 0.00</h3>
+            </div>
+        </div>
+
+        <div class="caja-grid-cards">
+            <div class="metric-card border-secondary-caja">
+                <span class="metric-label" style="color: #475569;">Total Ventas Brutas</span>
+                <h3 id="txt-card-total-ventas" class="metric-value" style="color: #0f172a;">S/ 0.00</h3>
+            </div>
+            <div class="metric-card border-warning-caja">
+                <span class="metric-label text-warning">Ganancia Neta del Día</span>
+                <h3 id="txt-card-ganancias" class="metric-value text-warning">S/ 0.00</h3>
+            </div>
+            <div class="metric-card border-danger-caja">
+                <span class="metric-label text-danger">Total Gastos / Egresos</span>
+                <h3 id="txt-card-gastos" class="metric-value text-danger">S/ 0.00</h3>
+            </div>
+        </div>
+
+        <div class="caja-card">
+            <h5 style="font-weight: 700; color: #dc2626; margin-top: 0; margin-bottom: 4px;"><i class="bi bi-dash-circle" style="margin-right: 8px;"></i>Registrar Gasto de Caja Chica</h5>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">Cualquier salida de dinero en efectivo de la tienda debe ser registrada aquí</p>
+            <div class="caja-form-inline">
+                <div style="width: 250px;">
+                    <label class="form-label-caja">Monto del Gasto (S/)</label>
+                    <input type="number" id="input-gasto-monto" class="form-control-caja" placeholder="0.00" min="0" step="0.01">
+                </div>
+                <div style="flex: 1;">
+                    <label class="form-label-caja">Descripción / Concepto del Gasto</label>
+                    <input type="text" id="input-gasto-desc" class="form-control-caja" placeholder="Ej: Compra de artículos de limpieza o útiles de oficina">
+                </div>
+                <button id="btn-registrar-gasto" class="btn-caja-danger">
+                    <i class="bi bi-plus-circle" style="margin-right: 6px;"></i>Registrar Egresos
+                </button>
+            </div>
+        </div>
+
+        <div class="caja-card">
+            <h5 style="font-weight: 700; color: #0284c7; margin-top: 0; margin-bottom: 4px;"><i class="bi bi-calculator" style="margin-right: 8px;"></i>Arqueo de Caja u Cuadre Físico</h5>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">Ingresa el dinero físico real que tienes en mano para validar si cuadra perfectamente</p>
+            
+            <div class="caja-balance-box">
+                <div>
+                    <span style="font-weight: 700; color: #334155; display: block; font-size: 16px;">Monto Esperado en Caja Chica</span>
+                    <small style="color: #64748b;">Fórmula del Sistema: (Apertura + Ventas Efectivo - Gastos)</small>
+                </div>
+                <h2 id="txt-caja-esperada" class="caja-balance-monto">S/ 0.00</h2>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label class="form-label-caja" style="font-size: 15px;">Monto de Dinero Físico Contado Real (S/)</label>
+                <input type="number" id="input-dinero-contado" class="form-control-caja-lg" placeholder="Ingresa el total contado de monedas y billetes" min="0" step="0.01">
+            </div>
+
+            <div id="wrapper-descuadre" style="margin-bottom: 20px;"></div>
+
+            <div style="margin-bottom: 24px;">
+                <label class="form-label-caja">Bitácora u Observaciones de Cierre</label>
+                <textarea id="txt-observaciones-caja" class="form-control-caja" rows="3" placeholder="Ingresa notas si existió un descuadre, faltante, billetes falsos, etc..."></textarea>
+            </div>
+
+            <button id="btn-cerrar-caja-excel" class="btn-caja-primary" style="width: 100%; padding: 16px; font-size: 18px;">
+                <i class="bi bi-file-earmark-excel" style="margin-right: 8px;"></i>Finalizar Jornada, Cerrar Caja y Descargar Excel Oficial
+            </button>
+        </div>
+
+    </div>
 </div>

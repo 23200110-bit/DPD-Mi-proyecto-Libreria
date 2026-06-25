@@ -10,3 +10,13 @@ body, html {
 table { width: 100% !important; border-collapse: collapse !important; margin-top: 15px !important; }
 th, td { padding: 12px !important; text-align: left !important; border-bottom: 1px solid #e2e8f0 !important; }
 th { background-color: #f8fafc !important; color: #64748b !important; }
+
+/* Fondo recomendado: Limpio, moderno y con mucha vida */
+body, html {
+    background-color: #f1f5f9 !important; /* Gris azulado claro ultra moderno */
+}
+
+/* Sincroniza el fondo en el contenedor de la caja */
+.caja-modulo-wrapper {
+    background-color: #f1f5f9 !important;
+}

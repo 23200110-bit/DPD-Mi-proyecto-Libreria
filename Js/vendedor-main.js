@@ -1,5 +1,5 @@
 /* ==========================================================================
-   js/vendedor-main.js - CONTROLADOR ACTUALIZADO (REPARADO BUG DE CIERRE)
+   js/vendedor-main.js - CONTROLADOR ACTUALIZADO (INTEGRACIÓN DE CONTEO)
    ========================================================================== */
 import { inicializarModuloVentas } from './modulos/ventas.js';
 
@@ -61,60 +61,57 @@ async function cambiarVistaVendedor(vistaID) {
     const contenedor = document.getElementById('vendedor-main-container');
     if (!contenedor) return;
 
-    // Control para la pestaña 'conteo' (Módulo en Desarrollo)
-    if (vistaID === 'conteo') {
-        contenedor.innerHTML = `
-            <div class="temporary-empty-view" style="text-align:center; padding:50px; color:#64748b;">
-                <h3>⚠️ Módulo en Desarrollo</h3>
-                <p>La pantalla de "vistas/vendedor/conteo.html" se creará pronto.</p>
-            </div>`;
-        return;
-    }
+    try {
+        let carpetaVista = 'vendedor';
+        let archivoVista = `${vistaID}.html`;
 
-   try {
-    let carpetaVista = 'vendedor';
-    let archivoVista = `${vistaID}.html`;
-
-    if (vistaID === 'inicio') {
-        archivoVista = 'inicio-vendedor.html';
-    } else if (vistaID === 'inventario') {
-        archivoVista = 'inventario-vendedor.html';
-    } else if (vistaID === 'ventas') {
-        carpetaVista = 'compartido';
-        archivoVista = 'ventas.html';
-    }
-
-    const respuesta = await fetch(`vistas/${carpetaVista}/${archivoVista}`);
-
-    if (respuesta.ok) {
-        contenedor.innerHTML = await respuesta.text();
-
-        // Inicializar ventas
-        if (vistaID === 'ventas') {
-            inicializarModuloVentas();
-        }
-
-        // Inicializar módulo Inicio Vendedor
         if (vistaID === 'inicio') {
-            const modulo = await import('./modulos/inicio-vendedor.js');
-            modulo.inicializarInicioVendedor();
+            archivoVista = 'inicio-vendedor.html';
+        } else if (vistaID === 'inventario') {
+            archivoVista = 'inventario-vendedor.html';
+        } else if (vistaID === 'ventas') {
+            carpetaVista = 'compartido';
+            archivoVista = 'ventas.html';
         }
 
-        // Inicializar módulo Inventario Vendedor
-        if (vistaID === 'inventario') {
-            const modulo = await import('./modulos/inventario-vendedor.js');
-            modulo.inicializarInventarioVendedor();
+        // Hacemos el fetch al archivo html correspondiente
+        const respuesta = await fetch(`vistas/${carpetaVista}/${archivoVista}`);
+
+        if (respuesta.ok) {
+            contenedor.innerHTML = await respuesta.text();
+
+            // Inicializar ventas
+            if (vistaID === 'ventas') {
+                inicializarModuloVentas();
+            }
+
+            // Inicializar módulo Inicio Vendedor
+            if (vistaID === 'inicio') {
+                const modulo = await import('./modulos/inicio-vendedor.js');
+                modulo.inicializarInicioVendedor();
+            }
+
+            // Inicializar módulo Inventario Vendedor
+            if (vistaID === 'inventario') {
+                const modulo = await import('./modulos/inventario-vendedor.js');
+                modulo.inicializarInventarioVendedor();
+            }
+
+            // CORRECCIÓN: Inicializar módulo Conteo Físico apuntando a tu archivo real
+            if (vistaID === 'conteo') {
+                const modulo = await import('./modulos/conteo.js');
+                modulo.inicializarModuloConteo();
+            }
+
+        } else {
+            contenedor.innerHTML = `
+                <div class="temporary-empty-view">
+                    <h3>⚠️ Módulo en Desarrollo</h3>
+                    <p>La pantalla de "vistas/${carpetaVista}/${archivoVista}" se creará pronto.</p>
+                </div>`;
         }
 
-    } else {
-        contenedor.innerHTML = `
-            <div class="temporary-empty-view">
-                <h3>⚠️ Módulo en Desarrollo</h3>
-                <p>La pantalla de "vistas/vendedor/${archivoVista}" se creará pronto.</p>
-            </div>`;
+    } catch (err) {
+        console.error("Error al cargar sub-vista:", err);
     }
-
-} catch (err) {
-    console.error("Error al cargar sub-vista:", err);
-}
 }

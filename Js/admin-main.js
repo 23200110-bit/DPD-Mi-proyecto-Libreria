@@ -1,16 +1,21 @@
 /* ==========================================================================
    js/admin-main.js - CONTROLADOR DEL PANEL DE ADMINISTRADOR
    ========================================================================== */
+
 import { supabaseClient } from './supabase-config.js';
 import { inicializarInventarioAdmin } from './modulos/inventario-admin.js';
 import { inicializarCompras } from './modulos/compras.js';
 import { inicializarModuloVentas } from './modulos/ventas.js';
 import { inicializarAlertas } from './modulos/alertas.js';
 import { inicializarSeguridad } from './modulos/seguridad.js';
+import { inicializarModuloCaja } from './modulos/caja.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const emailSalvado = localStorage.getItem('SESION_EMAIL');
-    if (!emailSalvado) { window.location.href = "index.html"; return; }
+    if (!emailSalvado) {
+        window.location.href = "index.html";
+        return;
+    }
 
     const badge = document.getElementById('session-user-badge');
     if (badge) badge.textContent = emailSalvado;
@@ -20,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contenedorMenu.addEventListener('click', (e) => {
             const boton = e.target.closest('.nav-btn');
             if (!boton) return;
+
             e.preventDefault();
             const subVistaID = boton.id.replace('btn-nav-', '');
             cambiarSubVistaAdmin(subVistaID);
@@ -27,14 +33,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const btnSalir = document.getElementById('btn-logout');
-    if (btnSalir) { btnSalir.addEventListener('click', () => { logout(); }); }
+    if (btnSalir) {
+        btnSalir.addEventListener('click', () => {
+            logout();
+        });
+    }
 
     cambiarSubVistaAdmin('inicio');
 });
 
 async function cambiarSubVistaAdmin(subVistaID) {
+
     const botones = document.querySelectorAll('.nav-btn');
     botones.forEach(b => b.classList.remove('active'));
+
     const botonDestino = document.getElementById(`btn-nav-${subVistaID}`);
     if (botonDestino) botonDestino.classList.add('active');
 
@@ -42,57 +54,71 @@ async function cambiarSubVistaAdmin(subVistaID) {
     if (!contenedorPrincipal) return;
 
     try {
-        // Determinar carpeta y nombre de archivo según la vista
+
         let carpeta = 'admin';
         let nombreArchivo = subVistaID;
 
         if (subVistaID === 'inicio' || subVistaID === 'inventario') {
+
             nombreArchivo = `${subVistaID}-admin`;
+
         } else if (subVistaID === 'ventas') {
-            // ventas.html vive en compartido, igual que en el panel vendedor
+
             carpeta = 'compartido';
             nombreArchivo = 'ventas';
+
         }
 
         const respuesta = await fetch(`vistas/${carpeta}/${nombreArchivo}.html`);
 
         if (respuesta.ok) {
+
             contenedorPrincipal.innerHTML = await respuesta.text();
 
             // Disparadores de lógica por módulo
-        if (subVistaID === 'inventario') {
+            if (subVistaID === 'inventario') {
 
-            inicializarInventarioAdmin();
+                inicializarInventarioAdmin();
 
-        } else if (subVistaID === 'compras') {
+            } else if (subVistaID === 'compras') {
 
-            inicializarCompras();
+                inicializarCompras();
 
-        } else if (subVistaID === 'ventas') {
+            } else if (subVistaID === 'ventas') {
 
-            inicializarModuloVentas();
+                inicializarModuloVentas();
 
-        } else if (subVistaID === 'alertas') {
+            } else if (subVistaID === 'alertas') {
 
-            inicializarAlertas();
+                inicializarAlertas();
 
-        }else if (subVistaID === 'seguridad') {
+            } else if (subVistaID === 'seguridad') {
 
-            inicializarSeguridad();
+                inicializarSeguridad();
 
-        }
+            } else if (subVistaID === 'caja') {
 
+                inicializarModuloCaja();
+
+            }
 
         } else {
+
             contenedorPrincipal.innerHTML = `
                 <div class="temporary-empty-view">
                     <h3>⚠️ Módulo en Construcción</h3>
                     <p>El archivo "vistas/${carpeta}/${nombreArchivo}.html" está listo en el mapa pero vacío en disco.</p>
-                </div>`;
+                </div>
+            `;
+
         }
+
     } catch (error) {
+
         console.error("Error al renderizar subvista:", error);
+
     }
+
 }
 
 function logout() {
