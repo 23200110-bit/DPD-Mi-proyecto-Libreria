@@ -24,7 +24,6 @@ async function obtenerEmpleados() {
     if (!tbody) return;
 
     try {
-        // Consultamos la tabla "empleados" de tu script
         const { data: empleados, error } = await supabaseClient
             .from('empleados')
             .select('*')
@@ -42,7 +41,6 @@ async function obtenerEmpleados() {
 
         tbody.innerHTML = '';
         empleados.forEach(emp => {
-            // Usamos "fecha_registro" tal como se llama en tu tabla SQL
             const fechaFormateada = new Date(emp.fecha_registro).toLocaleDateString();
             
             const tr = document.createElement('tr');
@@ -60,7 +58,6 @@ async function obtenerEmpleados() {
             tbody.appendChild(tr);
         });
 
-        // Volver a activar los clics en los botones recién creados
         agregarEventosBotones();
 
     } catch (error) {
@@ -75,6 +72,8 @@ async function obtenerEmpleados() {
 async function guardarEmpleado() {
     const nombreCompleto = document.getElementById('empleado-nombre').value.trim();
     const email = document.getElementById('empleado-email').value.trim();
+    const passwordInput = document.getElementById('empleado-password');
+    const password = passwordInput ? passwordInput.value.trim() : '';
     const rol = document.getElementById('empleado-rol').value;
 
     if (!nombreCompleto || !email) {
@@ -88,7 +87,7 @@ async function guardarEmpleado() {
             const { error } = await supabaseClient
                 .from('empleados')
                 .update({ 
-                    nombre_completo: nombreCompleto, // Ajustado a tu BD
+                    nombre_completo: nombreCompleto,
                     email: email, 
                     rol: rol 
                 })
@@ -100,16 +99,30 @@ async function guardarEmpleado() {
             document.getElementById('btn-guardar-empleado').textContent = "Guardar";
         } else {
             // --- MODO CREAR (CREATE) ---
+            if (!password) {
+                alert("Por favor, asigna una contraseña para el nuevo acceso.");
+                return;
+            }
+
+            // 1. Crear el usuario en la autenticación de Supabase (Petición del líder)
+            const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (authError) throw authError;
+
+            // 2. Guardar el registro en tu tabla maestra de empleados
             const { error } = await supabaseClient
                 .from('empleados')
                 .insert([{ 
-                    nombre_completo: nombreCompleto, // Ajustado a tu BD
+                    nombre_completo: nombreCompleto,
                     email: email, 
                     rol: rol 
                 }]);
 
             if (error) throw error;
-            alert("Empleado registrado con éxito");
+            alert("Empleado y cuenta de acceso creados con éxito");
         }
 
         limpiarFormulario();
@@ -145,7 +158,6 @@ async function eliminarEmpleado(id) {
 // FUNCIONES AUXILIARES DE EVENTOS
 // ==========================================
 function agregarEventosBotones() {
-    // Eventos para el botón Eliminar
     document.querySelectorAll('.btn-eliminar').forEach(boton => {
         boton.addEventListener('click', (e) => {
             const id = e.target.getAttribute('data-id');
@@ -153,12 +165,10 @@ function agregarEventosBotones() {
         });
     });
 
-    // Eventos para el botón Editar
     document.querySelectorAll('.btn-editar').forEach(boton => {
         boton.addEventListener('click', async (e) => {
             const id = e.target.getAttribute('data-id');
             
-            // Buscar los datos en tu tabla 'empleados'
             const { data: emp, error } = await supabaseClient
                 .from('empleados')
                 .select('*')
@@ -170,6 +180,11 @@ function agregarEventosBotones() {
                 document.getElementById('empleado-email').value = emp.email;
                 document.getElementById('empleado-rol').value = emp.rol;
                 
+                // Limpiamos el input de contraseña al editar por seguridad
+                if (document.getElementById('empleado-password')) {
+                    document.getElementById('empleado-password').value = '';
+                }
+                
                 empleadoEditandoId = id;
                 document.getElementById('btn-guardar-empleado').textContent = "Actualizar";
             }
@@ -177,6 +192,14 @@ function agregarEventosBotones() {
     });
 }
 
+function limpiarFormulario() {
+    document.getElementById('empleado-nombre').value = '';
+    document.getElementById('empleado-email').value = '';
+    if (document.getElementById('empleado-password')) {
+        document.getElementById('empleado-password').value = '';
+    }
+    document.getElementById('empleado-rol').value = 'empleado';
+}
 function limpiarFormulario() {
     document.getElementById('empleado-nombre').value = '';
     document.getElementById('empleado-email').value = '';
