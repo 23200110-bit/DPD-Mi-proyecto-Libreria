@@ -1,7 +1,62 @@
-<div class="welcome-banner">
-    <h2>Panel Crítico de Alertas</h2>
-    <p>Productos con stock roto, vencimientos o sin rotación</p>
-</div>
-<div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; color: #64748b;">
-    🔔 Próximamente: Configuración de notificaciones push automatizadas para compras urgentes.
+<div class="admin-subview active">
+
+    <div class="welcome-banner">
+        <h2>⚠️ Panel de Alertas de Stock</h2>
+        <p>Productos que requieren reposición inmediata.</p>
+    </div>
+
+    <div class="operaciones-box" style="margin-bottom:20px; padding:15px;">
+
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+
+            <div class="stats-card">
+                <h3 id="total-alertas">0</h3>
+                <p>Total Alertas</p>
+            </div>
+
+            <div class="stats-card">
+                <h3 id="total-agotados">0</h3>
+                <p>Agotados</p>
+            </div>
+
+            <div class="stats-card">
+                <h3 id="total-bajo-stock">0</h3>
+                <p>Bajo Stock</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="carrito-box" style="padding:15px;overflow-x:auto;">
+
+        <table style="width:100%;">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Stock</th>
+                    <th>Mínimo</th>
+                    <th>Estado</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="tabla-alertas">
+
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:30px;">
+                        ⏳ Cargando alertas...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
