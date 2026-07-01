@@ -6,6 +6,7 @@
     <title>SIVEP - Panel Administrador</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/modulos/seguridad-empleados.css">
+    <link rel="stylesheet" href="css/modulos/reportes.css">
 </head>
 <body>
 
@@ -20,16 +21,18 @@
             </div>
 
             <div class="nav-menu-options">
-                <button id="btn-nav-inicio" class="nav-btn">🏠 Inicio</button>
-                <button id="btn-nav-compras" class="nav-btn">📦 Compras</button>
-                <button id="btn-nav-precios" class="nav-btn">🏷️ Precios</button>
-                <button id="btn-nav-ventas" class="nav-btn">🛒 Ventas</button>
+                <button id="btn-nav-inicio"     class="nav-btn">🏠 Inicio</button>
+                <button id="btn-nav-compras"    class="nav-btn">📦 Compras</button>
+                <button id="btn-nav-precios"    class="nav-btn">🏷️ Precios</button>
+                <button id="btn-nav-ventas"     class="nav-btn">🛒 Ventas</button>
                 <button id="btn-nav-inventario" class="nav-btn">📋 Inventario</button>
-                <button id="btn-nav-caja" class="nav-btn">💰 Caja</button>
-                <button id="btn-nav-empleados" class="nav-btn">👥 Empleados</button>
-                <button id="btn-nav-reportes" class="nav-btn">📊 Reportes</button>
-                <a id="btn-nav-alertas" class="nav-btn badge-alert-nav" href="alertas.html">🔔 Alertas <span class="alert-counter-badge">3</span></a>
-                <button id="btn-nav-seguridad" class="nav-btn">🛡️ Seguridad</button>
+                <button id="btn-nav-caja"       class="nav-btn">💰 Caja</button>
+                <button id="btn-nav-empleados"  class="nav-btn">👥 Empleados</button>
+                <button id="btn-nav-reportes"   class="nav-btn">📊 Reportes</button>
+                <a id="btn-nav-alertas" class="nav-btn badge-alert-nav" href="alertas.html">
+                    🔔 Alertas <span class="alert-counter-badge">3</span>
+                </a>
+                <button id="btn-nav-seguridad"  class="nav-btn">🛡️ Seguridad</button>
             </div>
 
             <div class="nav-user-controls">
@@ -38,14 +41,15 @@
             </div>
         </nav>
 
-        <main id="admin-main-container" class="admin-main-content">
-        </main>
+        <main id="admin-main-container" class="admin-main-content"></main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script type="module" src="Js/admin-main.js"></script>
 </body>
 </html>
