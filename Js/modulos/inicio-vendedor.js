@@ -2,6 +2,7 @@ import { supabaseClient } from '../supabase-config.js';
 
 export function inicializarInicioVendedor() {
     console.count('Inicio vendedor cargado');
+    cargarDashboard();
 
     // Botón Consultar Inventario
     const btnVenta = document.querySelector('.btn-acceso:nth-child(1)');
@@ -128,4 +129,124 @@ console.table(data);
 });
 
     
+}
+
+async function cargarDashboard() {
+
+    // ===========================
+// Últimas ventas
+// ===========================
+
+const { data: ventas } = await supabaseClient
+    .from('ventas')
+    .select('id_venta, tipo_comprobante, metodo_pago, total_cobrado, fecha_hora')
+    .order('fecha_hora', { ascending: false })
+    .limit(5);
+
+const tbody = document.getElementById('tabla-ultimas-ventas');
+
+tbody.innerHTML = '';
+
+if (!ventas || ventas.length === 0) {
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5">
+                No existen ventas registradas.
+            </td>
+        </tr>
+    `;
+
+}
+else{
+
+    ventas.forEach(venta=>{
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${venta.id_venta}</td>
+
+            <td>${venta.tipo_comprobante}</td>
+
+            <td>${venta.metodo_pago}</td>
+
+            <td>S/ ${Number(venta.total_cobrado).toFixed(2)}</td>
+
+            <td>${new Date(venta.fecha_hora).toLocaleString()}</td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+    try {
+
+        // ===========================
+        // Productos registrados
+        // ===========================
+
+        const { count: totalProductos } = await supabaseClient
+            .from('productos')
+            .select('*', { count: 'exact', head: true });
+
+        document.getElementById('productos-total').textContent =
+            totalProductos ?? 0;
+
+
+        // ===========================
+        // Productos con stock bajo
+        // ===========================
+
+        const { count: stockBajo } = await supabaseClient
+            .from('productos')
+            .select('*', { count: 'exact', head: true })
+            .lte('stock_actual', 10);
+
+        document.getElementById('stock-bajo').textContent =
+            stockBajo ?? 0;
+
+
+        // ===========================
+        // Conteos realizados
+        // ===========================
+
+        const { count: conteos } = await supabaseClient
+            .from('conteos_auditoria')
+            .select('*', { count: 'exact', head: true });
+
+        document.getElementById('conteos-pendientes').textContent =
+            conteos ?? 0;
+
+
+        // ===========================
+        // Ventas de hoy
+        // ===========================
+
+        const hoy = new Date();
+
+        hoy.setHours(0,0,0,0);
+
+        const fechaHoy = hoy.toISOString();
+
+        const { count: ventasHoy } = await supabaseClient
+            .from('ventas')
+            .select('*', { count: 'exact', head: true })
+            .gte('fecha_hora', fechaHoy);
+
+        document.getElementById('ventas-hoy').textContent =
+            ventasHoy ?? 0;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
 }
