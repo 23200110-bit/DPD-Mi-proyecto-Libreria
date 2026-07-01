@@ -1,9 +1,75 @@
 import { supabaseClient } from '../supabase-config.js';
 
 let listaAlertas = [];
+let filtroActual = "todos";
 
 export async function inicializarAlertas() {
+
     await cargarAlertas();
+
+    const buscador = document.getElementById("buscar-alerta");
+
+    if (buscador) {
+
+        buscador.addEventListener("input", (e) => {
+
+            renderizarAlertas(e.target.value);
+
+        });
+
+    }
+
+    document.getElementById("filtro-todos")?.addEventListener("click", () => {
+
+        cambiarFiltro("todos");
+
+    });
+
+    document.getElementById("filtro-bajo")?.addEventListener("click", () => {
+
+        cambiarFiltro("bajo");
+
+    });
+
+    document.getElementById("filtro-agotado")?.addEventListener("click", () => {
+
+        cambiarFiltro("agotado");
+
+    });
+
+}
+
+function cambiarFiltro(filtro){
+
+    filtroActual = filtro;
+
+    actualizarBotones();
+
+    const texto = document.getElementById("buscar-alerta")?.value || "";
+
+    renderizarAlertas(texto);
+
+}
+
+function actualizarBotones(){
+
+    document.getElementById("filtro-todos").style.background =
+        filtroActual==="todos" ? "#0284c7" : "#e2e8f0";
+
+    document.getElementById("filtro-todos").style.color =
+        filtroActual==="todos" ? "white" : "black";
+
+    document.getElementById("filtro-bajo").style.background =
+        filtroActual==="bajo" ? "#fbbf24" : "#e2e8f0";
+
+    document.getElementById("filtro-bajo").style.color = "black";
+
+    document.getElementById("filtro-agotado").style.background =
+        filtroActual==="agotado" ? "#ef4444" : "#e2e8f0";
+
+    document.getElementById("filtro-agotado").style.color =
+        filtroActual==="agotado" ? "white" : "black";
+
 }
 
 async function cargarAlertas() {
@@ -22,16 +88,20 @@ async function cargarAlertas() {
         );
 
         renderizarAlertas();
+        
+        actualizarBotones();
 
     } catch (err) {
+
         console.error("Error al cargar alertas:", err);
+
     }
 
 }
 
-function renderizarAlertas() {
+function renderizarAlertas(busqueda = "") {
 
-    const tbody = document.getElementById('tabla-alertas');
+    const tbody = document.getElementById("tabla-alertas");
 
     if (!tbody) return;
 
@@ -42,12 +112,28 @@ function renderizarAlertas() {
     document.getElementById("total-agotados").textContent = agotados;
     document.getElementById("total-bajo-stock").textContent = bajoStock;
 
-    if (listaAlertas.length === 0) {
+    let productosFiltrados = listaAlertas.filter(producto =>
+        producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    );
+
+    if(filtroActual==="bajo"){
+
+        productosFiltrados = productosFiltrados.filter(p=>p.stock_actual>0);
+
+    }
+
+    if(filtroActual==="agotado"){
+
+        productosFiltrados = productosFiltrados.filter(p=>p.stock_actual===0);
+
+    }
+
+    if (productosFiltrados.length === 0) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align:center;padding:30px;">
-                    ✅ No existen alertas de inventario.
+                <td colspan="6" style="text-align:center;padding:30px;color:#64748b;">
+                    🔍 No se encontraron productos.
                 </td>
             </tr>
         `;
@@ -56,43 +142,73 @@ function renderizarAlertas() {
 
     }
 
-    tbody.innerHTML = listaAlertas.map(p => {
+    tbody.innerHTML = productosFiltrados.map(p => {
 
-        let badge;
+let badge;
 
-        if (p.stock_actual === 0) {
+if (p.stock_actual === 0) {
 
-            badge = `<span class="alert-tag tag-danger">Agotado</span>`;
+    badge = `
+        <span style="
+            display:inline-block;
+            background:#FEE2E2;
+            color:#DC2626;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:600;
+        ">
+            Agotado
+        </span>
+    `;
 
-        } else {
+} else {
 
-            badge = `<span class="alert-tag tag-warning">Bajo Stock</span>`;
+    badge = `
+        <span style="
+            display:inline-block;
+            background:#FEF3C7;
+            color:#D97706;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:600;
+        ">
+            Bajo Stock
+        </span>
+    `;
 
-        }
+}
 
-        return `
+return `
 
-            <tr>
+    <tr>
 
-                <td>${p.id}</td>
+        <td>${p.id}</td>
 
-                <td>${p.nombre}</td>
+        <td>${p.nombre}</td>
 
-                <td>${p.categoria}</td>
+        <td>${p.categoria}</td>
 
-                <td style="text-align:center;font-weight:bold;">
-                    ${p.stock_actual}
-                </td>
+        <td style="
+            text-align:center;
+            font-weight:bold;
+            color:${p.stock_actual === 0 ? '#DC2626' : '#D97706'};
+        ">
+            ${p.stock_actual}
+        </td>
 
-                <td style="text-align:center;">
-                    ${p.stock_minimo_alerta}
-                </td>
+        <td style="text-align:center;">
+            ${p.stock_minimo_alerta}
+        </td>
 
-                <td>${badge}</td>
+        <td style="text-align:center;">
+            ${badge}
+        </td>
 
-            </tr>
+    </tr>
 
-        `;
+`;
 
     }).join("");
 
