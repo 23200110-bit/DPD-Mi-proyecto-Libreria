@@ -70,4 +70,26 @@
             </div>
         </form>
     </div>
+
+    <div id="modal-escaner" class="modal-escaner-fondo" style="display:none;">
+        <div class="modal-escaner-caja">
+            <div class="modal-escaner-cabecera">
+                <h3>📷 Escanear Código de Barras de Lote</h3>
+                <button type="button" id="btn-cerrar-escaner" class="btn-cerrar-modal">✕</button>
+            </div>
+
+            <div class="modal-escaner-selector">
+                <label for="select-camara">Cámara:</label>
+                <select id="select-camara"></select>
+                <button type="button" id="btn-iniciar-escaner" class="btn-iniciar-camara">▶ Iniciar</button>
+                <button type="button" id="btn-detener-escaner" class="btn-detener-camara" style="display:none;">⏹ Detener</button>
+            </div>
+
+            <div id="lector-qr"></div>
+
+            <div id="escaner-resultado" class="escaner-resultado" style="display:none;">
+                <p id="escaner-mensaje"></p>
+            </div>
+        </div>
+    </div>
 </div>

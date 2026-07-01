@@ -5,7 +5,7 @@ let datosReporteActual = [];
 let miGrafico = null;
 
 export function inicializarReportes() {
-    console.log("Módulo de Reportes con Dashboard cargado");
+    console.log("Módulo de Reportes con Dashboard cargado y optimizado");
 
     // Cargar reporte inicial (Ventas)
     cargarDatosReporte('ventas');
@@ -31,7 +31,7 @@ async function cargarDatosReporte(tipo) {
 
     if (!body || !head) return;
 
-    body.innerHTML = `<tr><td style="text-align:center; padding:20px;">Procesando analítica...</td></tr>`;
+    body.innerHTML = `<tr><td style="text-align:center; padding:30px; color:#64748b;">Procesando analítica en tiempo real...</td></tr>`;
 
     try {
         if (tipo === 'ventas') {
@@ -47,32 +47,35 @@ async function cargarDatosReporte(tipo) {
             if (error) throw error;
             datosReporteActual = ventas || [];
 
-            // Armar cabecera de ventas
+            // Armar cabecera Senior de ventas
             head.innerHTML = `
-                <tr>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:left;">ID Venta</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:left;">Fecha</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:left;">Método Pago</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:right;">Total Cobrado</th>
+                <tr style="color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    <th style="padding: 12px 16px; text-align: left;">ID Venta</th>
+                    <th style="padding: 12px 16px; text-align: left;">Fecha Emitida</th>
+                    <th style="padding: 12px 16px; text-align: left;">Método de Pago</th>
+                    <th style="padding: 12px 16px; text-align: right; width: 150px;">Total Cobrado</th>
                 </tr>`;
 
             if (datosReporteActual.length === 0) {
-                body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px;">No hay registros de ventas.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#94a3b8;">No hay registros de ventas en la base de datos.</td></tr>`;
                 return;
             }
 
-            // Llenar filas de la tabla
-            body.innerHTML = '';
-            datosReporteActual.forEach(v => {
+            // Inyección limpia no destructiva
+            body.innerHTML = datosReporteActual.map(v => {
                 const f = new Date(v.fecha_venta).toLocaleDateString();
-                body.innerHTML += `
-                    <tr>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0;">#${v.id_venta}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${f}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${v.metodo_pago || 'Efectivo'}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:right; font-weight:600; color:#16a34a;">S/ ${parseFloat(v.total_cobrado).toFixed(2)}</td>
+                return `
+                    <tr style="background: #ffffff;">
+                        <td style="padding: 14px 16px; color: #64748b; font-weight: 500; font-size: 14px; border-bottom: 1px solid #f1f5f9;">#${v.id_venta}</td>
+                        <td style="padding: 14px 16px; color: #1e293b; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${f}</td>
+                        <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                            <span style="background-color: #f1f5f9; color: #334155; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 50px;">
+                                💳 ${v.metodo_pago || 'Efectivo'}
+                            </span>
+                        </td>
+                        <td style="padding: 14px 16px; text-align: right; font-weight: 700; color: #16a34a; font-size: 14px; font-family: monospace; border-bottom: 1px solid #f1f5f9;">S/. ${parseFloat(v.total_cobrado).toFixed(2)}</td>
                     </tr>`;
-            });
+            }).join('');
 
         } else if (tipo === 'inventario') {
             titulo.textContent = "Estado de Almacén e Inventario";
@@ -87,31 +90,39 @@ async function cargarDatosReporte(tipo) {
             if (error) throw error;
             datosReporteActual = productos || [];
 
-            // Armar cabecera de inventario
+            // Armar cabecera Senior de inventario
             head.innerHTML = `
-                <tr>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:left;">Código</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:left;">Producto</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:right;">Precio</th>
-                    <th style="padding:10px; border-bottom:2px solid #cbd5e1; text-align:right;">Stock Actual</th>
+                <tr style="color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    <th style="padding: 12px 16px; text-align: left; width: 160px;">Código de Barras</th>
+                    <th style="padding: 12px 16px; text-align: left;">Descripción del Producto</th>
+                    <th style="padding: 12px 16px; text-align: right; width: 130px;">Precio Venta</th>
+                    <th style="padding: 12px 16px; text-align: right; width: 130px;">Disponibilidad</th>
                 </tr>`;
 
             if (datosReporteActual.length === 0) {
-                body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px;">No hay productos en inventario.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#94a3b8;">No hay productos registrados en almacén.</td></tr>`;
                 return;
             }
 
-            body.innerHTML = '';
-            datosReporteActual.forEach(p => {
-                const stockColor = p.stock_actual <= p.stock_minimo ? '#ef4444' : '#1e293b';
-                body.innerHTML += `
-                    <tr>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0; color:#64748b;">${p.codigo_barras || p.id}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0; font-weight:500;">${p.nombre}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:right;">S/ ${parseFloat(p.precio_venta).toFixed(2)}</td>
-                        <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:right; font-weight:600; color:${stockColor};">${p.stock_actual} und</td>
+            // Inyección limpia sin alterar listeners globales
+            body.innerHTML = datosReporteActual.map(p => {
+                const stock = p.stock_actual || 0;
+                const min = p.stock_minimo_alerta || 10;
+                const colorStock = stock <= min ? '#dc2626' : '#0f172a';
+                const pesoStock = stock <= min ? '700' : '600';
+
+                return `
+                    <tr style="background: #ffffff;">
+                        <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                            <span style="background-color: #f1f5f9; color: #475569; font-family: monospace; font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                                ${p.codigo_barras || p.id}
+                            </span>
+                        </td>
+                        <td style="padding: 14px 16px; color: #1e293b; font-weight: 600; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${p.nombre}</td>
+                        <td style="padding: 14px 16px; text-align: right; color: #475569; font-size: 14px; font-family: monospace; border-bottom: 1px solid #f1f5f9;">S/. ${parseFloat(p.precio_venta).toFixed(2)}</td>
+                        <td style="padding: 14px 16px; text-align: right; font-weight: ${pesoStock}; color: ${colorStock}; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${stock} und</td>
                     </tr>`;
-            });
+            }).join('');
         }
 
         // --- RENDERIZAR EL GRÁFICO ESTADÍSTICO ---
@@ -119,7 +130,7 @@ async function cargarDatosReporte(tipo) {
 
     } catch (error) {
         console.error("Error cargando reporte:", error.message);
-        body.innerHTML = `<tr><td style="text-align:center; color:red; padding:20px;">Error de sincronización con Supabase.</td></tr>`;
+        body.innerHTML = `<tr><td style="text-align:center; color:#dc2626; font-weight:600; padding:30px;">❌ Error de sincronización de analíticas con Supabase.</td></tr>`;
     }
 }
 
@@ -188,7 +199,11 @@ function renderizarGraficoDashboard(tipo) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: true, position: 'top' }
+                legend: { 
+                    display: true, 
+                    position: 'top',
+                    labels: { font: { weight: '600', size: 12 }, color: '#334155' }
+                }
             },
             scales: {
                 y: { 

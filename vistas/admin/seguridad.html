@@ -1,40 +1,75 @@
-<div class="admin-subview active">
+<div class="seguridad-contenedor">
 
-    <div class="welcome-banner">
-        <h2>🛡️ Seguridad y Auditoría</h2>
-        <p>Registro de auditorías realizadas por los vendedores.</p>
+  <!-- Cabecera -->
+  <div class="seguridad-cabecera">
+    <h2>Seguridad</h2>
+    <p>Control de anomalías y prevención de pérdidas</p>
+  </div>
+
+  <!-- Banner privado -->
+  <div class="banner-privado">
+    <span class="banner-privado-icono">🔒</span>
+    <div>
+      <strong>Sección Privada</strong>
+      <p>Esta sección es solo visible para el dueño del negocio. La información aquí mostrada es confidencial.</p>
     </div>
+  </div>
 
-    <div class="carrito-box" style="padding:15px;overflow-x:auto;">
-
-        <table style="width:100%;">
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Vendedor</th>
-                    <th>Producto</th>
-                    <th>Stock Sistema</th>
-                    <th>Stock Contado</th>
-                    <th>Diferencia</th>
-                    <th>Fecha</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="tabla-seguridad">
-
-                <tr>
-                    <td colspan="7" style="text-align:center;padding:30px;">
-                        ⏳ Cargando auditoría...
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
+  <!-- Contadores -->
+  <div class="contadores-alerta">
+    <div class="contador-badge pendiente">
+      ⚠️ <span id="num-pendientes">0</span> alertas pendientes
     </div>
+    <div class="contador-badge revisada">
+      ✓ <span id="num-revisadas">0</span> alertas revisadas
+    </div>
+  </div>
 
+  <!-- Alertas de Anomalías -->
+  <div class="seccion-card">
+    <div class="seccion-card-cabecera">
+      <span class="seccion-icono alerta-icono">⚠️</span>
+      <div>
+        <h3>Alertas de Anomalías</h3>
+        <p>Situaciones que requieren investigación</p>
+      </div>
+    </div>
+    <div id="lista-alertas">
+      <p class="sin-alertas">⏳ Cargando alertas...</p>
+    </div>
+  </div>
+
+  <!-- Consejos de Prevención -->
+  <div class="seccion-card">
+    <div class="seccion-card-cabecera consejos-cabecera">
+      <span class="seccion-icono consejos-icono">💡</span>
+      <div>
+        <h3>Consejos de Prevención de Robos</h3>
+        <p>Recomendaciones para proteger tu negocio</p>
+      </div>
+      <button class="btn-pedir-consejos" id="btn-pedir-consejos">
+        💡 Pedir Consejos
+      </button>
+    </div>
+    <div id="contenedor-consejos" style="display:none;">
+      <div id="texto-consejos" class="consejos-texto"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Ver Reporte -->
+<div id="modal-reporte" class="modal-reporte-overlay" style="display:none;">
+  <div class="modal-reporte-caja">
+    <div class="modal-reporte-cabecera">
+      <h3>📄 Reporte de Anomalía</h3>
+      <button id="btn-cerrar-reporte" class="btn-cerrar-modal">✕</button>
+    </div>
+    <div id="modal-reporte-contenido" class="modal-reporte-contenido"></div>
+    <div class="modal-reporte-acciones">
+      <button id="btn-descargar-pdf" class="btn-descargar-pdf">
+        ⬇️ Descargar PDF
+      </button>
+    </div>
+  </div>
 </div>

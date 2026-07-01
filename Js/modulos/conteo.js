@@ -39,9 +39,8 @@ export async function inicializarModuloConteo() {
             data.forEach(prod => {
                 const option = document.createElement('option');
                 option.value = prod.id;
-                // Formato idéntico a tu ejemplo visual
-                const marcaInfo = prod.marca ? ` [${prod.marca}]` : '';
-                option.textContent = `${prod.nombre}${marcaInfo} (Stock actual: ${prod.stock_actual})`;
+                const marcaInfo = prod.marca ? ` [${prod.marca}]` : '';             
+                option.textContent = `${prod.nombre}${marcaInfo}`;
                 selectProducto.appendChild(option);
             });
 
@@ -51,10 +50,9 @@ export async function inicializarModuloConteo() {
         }
     }
 
-    // Ejecución inicial de carga de datos
     await obtenerProductosDesdeSupabase();
 
-    // 2. CAPTURAR EL SUBMIT DEL FORMULARIO Y CALCULAR PÉRDIDAS
+    // 2. CAPTURAR EL SUBMIT DEL FORMULARIO
     formConteo.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -67,26 +65,21 @@ export async function inicializarModuloConteo() {
         }
 
         if (isNaN(stockContado) || stockContado < 0) {
-            alert("El stock físico real no puede ser un valor negativo o vacío.");
+            alert("El stock físico no puede ser un valor negativo o vacío.");
             return;
         }
 
-        // Buscar correspondencia en la memoria local
         const prodSistema = listaProductosMemoria.find(p => p.id == idSel);
         if (!prodSistema) return;
 
         const stockTeoricoSistema = parseInt(prodSistema.stock_actual || 0);
-        
-        /* CÁLCULO DE DISCREPANCIA SEGÚN TU COMENTARIO SQL: 
-           (stock_sistema - stock_contado)
-           - Si da POSITIVO: Significa que FALTA stock en físico (pérdida de productos).
-           - Si da NEGATIVO: Significa que SOBRA stock físico en la tienda.
-        */
-        const discrepanciaCalculada = stockTeoricoSistema - stockContado;
-        const precioUnitario = parseFloat(prodSistema.precio_venta || 0);
-        const valorFinancieroImpacto = discrepanciaCalculada * precioUnitario;
 
-        // Recuperamos el email del usuario en sesión activa o un fallback genérico
+        // Discrepancia calculada pero NO mostrada al empleado
+        const discrepanciaCalculada = stockTeoricoSistema - stockContado;
+
+        // Confirmación neutra — el empleado no ve si hay diferencia o no
+        if (!confirm("¿Confirmas que deseas registrar este conteo físico?")) return;
+
         let emailUsuarioActivo = "vendedor.anonimo@lapizdeoro.com";
         try {
             const { data: sessionData } = await supabaseClient.auth.getSession();
@@ -97,20 +90,7 @@ export async function inicializarModuloConteo() {
             console.log("No se pudo extraer el email de auth, usando por defecto.");
         }
 
-        // Mensaje dinámico de diagnóstico para el usuario
-        let resumenAlerta = "";
-        if (discrepanciaCalculada === 0) {
-            resumenAlerta = `✓ Perfecto: El conteo físico coincide con el sistema de inventario (${stockTeoricoSistema} unidades).`;
-        } else if (discrepanciaCalculada > 0) {
-            resumenAlerta = `⚠️ ALERTA DE FALTANTE (PÉRDIDA):\nFaltan ${discrepanciaCalculada} unidades físicas en el establecimiento.\nValor estimado de la pérdida: S/ ${valorFinancieroImpacto.toFixed(2)}`;
-        } else {
-            resumenAlerta = `📢 EXCESO DETECTADO (SOBRANTE):\nSe encontraron ${Math.abs(discrepanciaCalculada)} unidades adicionales físicamente.\nImpacto: S/ ${Math.abs(valorFinancieroImpacto).toFixed(2)}`;
-        }
-
-        if (!confirm(`${resumenAlerta}\n\n¿Estás seguro de registrar esta auditoría en el sistema?`)) return;
-
         try {
-            // Guardamos en tu tabla original con tus nombres exactos de columna
             const { error: errInsert } = await supabaseClient
                 .from('conteos_auditoria')
                 .insert([{
@@ -123,14 +103,14 @@ export async function inicializarModuloConteo() {
 
             if (errInsert) throw errInsert;
 
-            alert("¡Auditoría de conteo físico almacenada con éxito!");
+            // Mensaje neutro — sin revelar si hubo diferencia
+            alert("✅ Conteo registrado correctamente.");
             
-            // Reestablecer formulario
             inputStockContado.value = "0";
             await obtenerProductosDesdeSupabase();
 
         } catch (err) {
-            alert("Error al procesar e insertar la auditoría: " + err.message);
+            alert("Error al procesar el conteo: " + err.message);
         }
     });
 }
