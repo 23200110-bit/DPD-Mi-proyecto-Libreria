@@ -343,7 +343,7 @@ const CONSEJOS = [
     {
         numero: '3',
         titulo: 'Prioriza el conteo de productos de alto valor',
-        detalle: 'Los artículos de mayor precio (calculadoras, juegos de geometría, etc.) deben contarse con mayor frecuencia. Son los más rentables para quien intente sustraerlos.'
+        detalle: 'Los artículos de mayor precio deben contarse con mayor frecuencia. Son los más rentables para quien intente sustraerlos.'
     },
     {
         numero: '4',
@@ -353,12 +353,42 @@ const CONSEJOS = [
     {
         numero: '5',
         titulo: 'Controla el acceso al almacén',
-        detalle: 'Solo las personas autorizadas deben tener acceso al stock de reserva. Registra quién entra y en qué horario. Un cuaderno de acceso es suficiente para empezar.'
+        detalle: 'Solo las personas autorizadas deben tener acceso al stock de reserva. Registra quién entra y en qué horario.'
     },
     {
         numero: '6',
         titulo: 'Cruza ventas con inventario semanalmente',
         detalle: 'Compara el total de unidades vendidas según el sistema contra la reducción real del stock. Si las cifras no cuadran, hay una fuga que investigar.'
+    },
+    {
+        numero: '7',
+        titulo: 'Establece un sistema de doble verificación',
+        detalle: 'Para productos de alto valor, exige que dos personas distintas confirmen el conteo. Una sola persona puede equivocarse o falsificar el registro.'
+    },
+    {
+        numero: '8',
+        titulo: 'Revisa el historial de un empleado con alertas repetidas',
+        detalle: 'Si el mismo empleado aparece en múltiples discrepancias, no es casualidad. Analiza el patrón antes de tomar una decisión.'
+    },
+    {
+        numero: '9',
+        titulo: 'Instala una cámara en la zona de caja y almacén',
+        detalle: 'No necesita ser costosa. Una cámara visible actúa como disuasivo. Colócala donde el empleado pueda verla claramente durante su turno.'
+    },
+    {
+        numero: '10',
+        titulo: 'Numera y sella los productos de alto riesgo',
+        detalle: 'Artículos pequeños y caros como calculadoras o juegos de geometría pueden marcarse con stickers internos para identificar si fueron vendidos o sustraídos.'
+    },
+    {
+        numero: '11',
+        titulo: 'No dejes cajas abiertas sin supervisión',
+        detalle: 'El efectivo sin contar es el riesgo más inmediato. Cierra y cuadra la caja al final de cada turno, no solo al final del día.'
+    },
+    {
+        numero: '12',
+        titulo: 'Comunica las políticas de seguridad desde el primer día',
+        detalle: 'El empleado nuevo debe saber desde su ingreso que existen conteos físicos y auditorías. La transparencia desde el inicio reduce los intentos de fraude.'
     },
 ];
 
@@ -370,16 +400,16 @@ function mostrarConsejos() {
     if (!contenedor || !textoDiv) return;
 
     const html = CONSEJOS.map(c => `
-        <div style="margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
-            <p style="margin:0 0 4px 0; font-weight:700; color:#0f172a;">
+        <div style="margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid #e2e8f0;">
+            <p style="margin:0 0 1px 0; font-weight:700; color:#0f172a; font-size:13px;">
                 ${c.numero}. ${c.titulo}
             </p>
-            <p style="margin:0; color:#475569; font-size:13px; line-height:1.6;">
+            <p style="margin:0; color:#475569; font-size:12px; line-height:1.4;">
                 ${c.detalle}
             </p>
         </div>
     `).join('');
-
+    
     textoDiv.innerHTML = html;
     contenedor.style.display = '';
 
