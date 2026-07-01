@@ -34,7 +34,7 @@ async function obtenerEmpleados() {
         if (!empleados || empleados.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" style="text-align:center;padding:20px;">No hay empleados registrados.</td>
+                    <td colspan="6" style="text-align:center; padding:30px; color: #94a3b8; font-size: 14px;">No hay empleados registrados en el sistema.</td>
                 </tr>`;
             return;
         }
@@ -43,16 +43,27 @@ async function obtenerEmpleados() {
         empleados.forEach(emp => {
             const fechaFormateada = new Date(emp.fecha_registro).toLocaleDateString();
             
+            // Renderizado estético Senior en base a roles
+            let badgeRol = `<span class="alert-tag status-pill badge-disponible" style="display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; text-transform: capitalize;">${emp.rol}</span>`;
+            if (emp.rol === 'admin') {
+                badgeRol = `<span class="alert-tag tag-warning" style="display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; text-transform: capitalize;">Administrador</span>`;
+            }
+
             const tr = document.createElement('tr');
+            tr.style.background = '#ffffff';
+            tr.style.transition = 'background 0.2s';
+            
             tr.innerHTML = `
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${emp.id}</td>
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${emp.nombre_completo}</td>
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${emp.email}</td>
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><span class="badge-${emp.rol}">${emp.rol}</span></td>
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">${fechaFormateada}</td>
-                <td style="padding:10px; border-bottom:1px solid #e2e8f0; text-align:center;">
-                    <button class="btn-editar" data-id="${emp.id}" style="background:#3b82f6; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-right:5px;">Editar</button>
-                    <button class="btn-eliminar" data-id="${emp.id}" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Eliminar</button>
+                <td style="padding: 14px 16px; color: #64748b; font-weight: 500; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${emp.id}</td>
+                <td style="padding: 14px 16px; color: #1e293b; font-weight: 600; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${emp.nombre_completo}</td>
+                <td style="padding: 14px 16px; color: #475569; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${emp.email}</td>
+                <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">${badgeRol}</td>
+                <td style="padding: 14px 16px; color: #64748b; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${fechaFormateada}</td>
+                <td style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9;">
+                    <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                        <button class="btn-editar" data-id="${emp.id}" style="background-color: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);" title="Editar">✏️ Editar</button>
+                        <button class="btn-eliminar" data-id="${emp.id}" style="background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);" title="Eliminar">🗑️ Eliminar</button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -62,7 +73,7 @@ async function obtenerEmpleados() {
 
     } catch (error) {
         console.error("Error al obtener empleados:", error.message);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red; padding:20px;">Error al cargar datos.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444; font-weight: 600; padding:30px;">❌ Error al cargar los registros oficiales de Supabase.</td></tr>`;
     }
 }
 
@@ -94,7 +105,7 @@ async function guardarEmpleado() {
                 .eq('id', empleadoEditandoId);
 
             if (error) throw error;
-            alert("Empleado actualizado con éxito");
+            alert("Empleado actualizado con éxito.");
             empleadoEditandoId = null;
             document.getElementById('btn-guardar-empleado').textContent = "Guardar";
         } else {
@@ -104,7 +115,7 @@ async function guardarEmpleado() {
                 return;
             }
 
-            // 1. Crear el usuario en la autenticación de Supabase (Petición del líder)
+            // 1. Crear el usuario en la autenticación de Supabase (Sign Up)
             const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
@@ -122,7 +133,7 @@ async function guardarEmpleado() {
                 }]);
 
             if (error) throw error;
-            alert("Empleado y cuenta de acceso creados con éxito");
+            alert("Empleado y cuenta de acceso creados con éxito.");
         }
 
         limpiarFormulario();
@@ -147,7 +158,7 @@ async function eliminarEmpleado(id) {
 
         if (error) throw error;
 
-        alert("Empleado eliminado de la base de datos");
+        alert("Empleado eliminado de la base de datos.");
         obtenerEmpleados();
     } catch (error) {
         alert("Error al eliminar: " + error.message);
@@ -158,16 +169,18 @@ async function eliminarEmpleado(id) {
 // FUNCIONES AUXILIARES DE EVENTOS
 // ==========================================
 function agregarEventosBotones() {
+    // Eventos para botones Eliminar
     document.querySelectorAll('.btn-eliminar').forEach(boton => {
         boton.addEventListener('click', (e) => {
-            const id = e.target.getAttribute('data-id');
+            const id = e.currentTarget.getAttribute('data-id');
             eliminarEmpleado(id);
         });
     });
 
+    // Eventos para botones Editar
     document.querySelectorAll('.btn-editar').forEach(boton => {
         boton.addEventListener('click', async (e) => {
-            const id = e.target.getAttribute('data-id');
+            const id = e.currentTarget.getAttribute('data-id');
             
             const { data: emp, error } = await supabaseClient
                 .from('empleados')
@@ -198,10 +211,5 @@ function limpiarFormulario() {
     if (document.getElementById('empleado-password')) {
         document.getElementById('empleado-password').value = '';
     }
-    document.getElementById('empleado-rol').value = 'empleado';
-}
-function limpiarFormulario() {
-    document.getElementById('empleado-nombre').value = '';
-    document.getElementById('empleado-email').value = '';
     document.getElementById('empleado-rol').value = 'empleado';
 }
