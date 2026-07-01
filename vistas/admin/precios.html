@@ -21,11 +21,10 @@
                 <div class="product-summary-top">
                     <div>
                         <p class="label-sm">Producto seleccionado</p>
-                        <h3 id="product-selected-name">Artículo genérico</h3>
+                        <h3 id="product-selected-name">Cargando...</h3>
                     </div>
-                    <span id="product-change-badge" class="price-change-badge price-up">+0.0% aumento</span>
+                    <span id="product-change-badge" class="price-change-badge price-up">+0.0% margen</span>
                 </div>
-
                 <div class="product-summary-values">
                     <div>
                         <span class="summary-label">Costo anterior</span>
@@ -41,14 +40,15 @@
             <div class="form-row">
                 <label for="select-inventory">Selecciona un Inventario:</label>
                 <select id="select-inventory">
-                    <option>Artículo genérico</option>
+                    <option>Cargando productos...</option>
                 </select>
             </div>
 
             <div class="price-strategy-section">
                 <p class="label-sm">Selecciona una estrategia de precios:</p>
                 <div class="strategy-options-grid">
-                    <button type="button" class="strategy-card active" data-estrategia="ponderado">
+
+                    <button type="button" class="strategy-card active activa" data-estrategia="ponderado">
                         <div class="strategy-card-title">
                             <span class="strategy-icon">💰</span>
                             <div>
@@ -78,12 +78,16 @@
                                 <p>Ingresa el precio de venta que desees</p>
                             </div>
                         </div>
-                        <input id="manual-price-input" type="text" class="precio-manual-input" placeholder="S/. 0.00" disabled>
+                        <input id="manual-price-input" type="number" class="precio-manual-input"
+                               placeholder="S/. 0.00" disabled min="0" step="0.01">
                     </button>
+
                 </div>
             </div>
 
-            <button id="btn-apply-strategy" class="btn-apply-strategy-action">Aplicar Estrategia</button>
+            <button id="btn-apply-strategy" class="btn-apply-strategy-action">
+                Aplicar Estrategia
+            </button>
         </div>
 
         <div class="price-history-card">
@@ -105,27 +109,12 @@
                             <th>Fecha</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <!-- tbody dinámico — se llena desde precios.js -->
+                    <tbody id="historial-precios-tbody">
                         <tr>
-                            <td>Papel bond A4 80g 500 hojas</td>
-                            <td><span class="change-pill change-up">📈 Subió</span></td>
-                            <td>S/. 24.00</td>
-                            <td><strong>S/. 28.00</strong></td>
-                            <td>09/05/2026</td>
-                        </tr>
-                        <tr>
-                            <td>Colores Faber-Castell x24 largos</td>
-                            <td><span class="change-pill change-up">📈 Subió</span></td>
-                            <td>S/. 22.50</td>
-                            <td><strong>S/. 24.90</strong></td>
-                            <td>07/05/2026</td>
-                        </tr>
-                        <tr>
-                            <td>Borrador Faber-Castell PVC 20</td>
-                            <td><span class="change-pill change-down">📉 Bajó</span></td>
-                            <td>S/. 1.50</td>
-                            <td><strong>S/. 1.20</strong></td>
-                            <td>04/05/2026</td>
+                            <td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">
+                                ⏳ Cargando historial...
+                            </td>
                         </tr>
                     </tbody>
                 </table>

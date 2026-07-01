@@ -1,230 +1,286 @@
+/* ==========================================================================
+   js/modulos/precios.js
+   ========================================================================== */
 import { supabaseClient } from '../supabase-config.js';
 
-export function inicializarPrecios() {
-  const tarjetas = Array.from(document.querySelectorAll('.strategy-card'));
-  const manualInput = document.querySelector('.precio-manual-input');
-  const manualPriceInput = document.getElementById('manual-price-input');
-  const applyStrategyButton = document.getElementById('btn-apply-strategy');
-  const selectInventario = document.getElementById('select-inventory');
-  const productName = document.getElementById('product-selected-name');
-  const productOldCost = document.getElementById('product-old-cost');
-  const productNewCost = document.getElementById('product-new-cost');
-  const productChangeBadge = document.getElementById('product-change-badge');
-  const listaProductosInventario = document.getElementById('inventory-product-list');
+export async function inicializarPrecios() {
+    const tarjetas           = Array.from(document.querySelectorAll('.strategy-card'));
+    const manualPriceInput   = document.getElementById('manual-price-input');
+    const applyStrategyBtn   = document.getElementById('btn-apply-strategy');
+    const selectInventario   = document.getElementById('select-inventory');
+    const productName        = document.getElementById('product-selected-name');
+    const productOldCost     = document.getElementById('product-old-cost');
+    const productNewCost     = document.getElementById('product-new-cost');
+    const productChangeBadge = document.getElementById('product-change-badge');
 
-  const productosPorId = new Map();
-  let estrategiaSeleccionada = 'ponderado';
-  let productoActual = null;
+    const productosPorId   = new Map(); // id → { ...producto, precio_costo }
+    let estrategiaActual   = 'ponderado';
+    let productoActual     = null;
 
-  function mostrarProductoSeleccionado(producto) {
-    if (!producto) return;
-    productoActual = producto;
-    if (productName) productName.textContent = producto.nombre || 'Sin nombre';
-    if (productOldCost) {
-      const costoAnterior = Number(producto.precio_costo || 0).toFixed(2);
-      productOldCost.innerHTML = `<del>S/. ${costoAnterior}</del>`;
-    }
-    if (productNewCost) {
-      const precioVenta = Number(producto.precio_venta || 0).toFixed(2);
-      productNewCost.textContent = `S/. ${precioVenta}`;
-    }
-    if (productChangeBadge) {
-      const costoAnterior = Number(producto.precio_costo || 0);
-      const precioVenta = Number(producto.precio_venta || 0);
-      const cambio = costoAnterior > 0 ? ((precioVenta - costoAnterior) / costoAnterior) * 100 : 0;
-      const porcentaje = cambio.toFixed(1);
-      if (cambio >= 0) {
-        productChangeBadge.classList.add('price-up');
-        productChangeBadge.classList.remove('price-down');
-        productChangeBadge.textContent = `+${porcentaje}% margen`;
-      } else {
-        productChangeBadge.classList.add('price-down');
-        productChangeBadge.classList.remove('price-up');
-        productChangeBadge.textContent = `${porcentaje}% margen`;
-      }
-    }
-  }
+    /* -----------------------------------------------------------------------
+       1. CARGAR PRODUCTOS + SU COSTO MÁS RECIENTE DESDE COMPRAS
+    ----------------------------------------------------------------------- */
+    async function cargarProductos() {
+        const { data: productos, error: errP } = await supabaseClient
+            .from('productos')
+            .select('id, nombre, precio_venta, stock_actual')
+            .order('nombre', { ascending: true });
 
-  function seleccionarProducto(producto) {
-    mostrarProductoSeleccionado(producto);
-    if (selectInventario) selectInventario.value = producto.id;
-    actualizarSeleccionVisual(producto.id);
-  }
-
-  async function cargarProductosInventario() {
-    if (!selectInventario) return;
-
-    try {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('id, nombre, precio_venta, precio_costo, stock_actual')
-        .order('nombre', { ascending: true });
-
-      if (error) {
-        console.error('[Precios] Error cargando productos:', error);
-        return;
-      }
-
-      selectInventario.innerHTML = '';
-      if (listaProductosInventario) listaProductosInventario.innerHTML = '';
-
-      if (!Array.isArray(data) || data.length === 0) {
-        selectInventario.innerHTML = '<option value="">No hay productos disponibles</option>';
-        if (listaProductosInventario) {
-          listaProductosInventario.innerHTML = '<div class="inventory-product-empty">No hay productos disponibles</div>';
+        if (errP || !productos?.length) {
+            if (selectInventario)
+                selectInventario.innerHTML = '<option value="">No hay productos</option>';
+            return;
         }
-        return;
-      }
 
-      data.forEach((producto) => {
-        const option = document.createElement('option');
-        option.value = producto.id;
-        option.textContent = producto.nombre || 'Producto sin nombre';
-        selectInventario.appendChild(option);
-        productosPorId.set(String(producto.id), producto);
+        // Costo más reciente de cada producto (tabla compras)
+        const { data: compras } = await supabaseClient
+            .from('compras')
+            .select('producto_id, precio_costo')
+            .order('id_compra', { ascending: false });
 
-        if (listaProductosInventario) {
-          const item = document.createElement('button');
-          item.type = 'button';
-          item.className = 'inventory-product-item';
-          item.dataset.id = producto.id;
-          item.innerHTML = `
-            <div class="inventory-product-name">${producto.nombre || 'Producto sin nombre'}</div>
-            <div class="inventory-product-meta">
-              <span>Stock: ${producto.stock_actual ?? 0}</span>
-              <span>Precio: S/. ${Number(producto.precio_venta || 0).toFixed(2)}</span>
-            </div>
-          `;
+        const costoMap = {};
+        (compras || []).forEach(c => {
+            if (!costoMap[c.producto_id])
+                costoMap[c.producto_id] = parseFloat(c.precio_costo || 0);
+        });
 
-          item.addEventListener('click', () => {
-            selectInventario.value = producto.id;
-            seleccionarProducto(producto);
-            actualizarSeleccionVisual(producto.id);
-          });
+        if (selectInventario) selectInventario.innerHTML = '';
 
-          listaProductosInventario.appendChild(item);
+        productos.forEach(p => {
+            const conCosto = { ...p, precio_costo: costoMap[p.id] ?? 0 };
+            productosPorId.set(String(p.id), conCosto);
+
+            const opt = document.createElement('option');
+            opt.value   = p.id;
+            opt.textContent = p.nombre;
+            selectInventario?.appendChild(opt);
+        });
+
+        // Seleccionar el primero por defecto
+        const primero = { ...productos[0], precio_costo: costoMap[productos[0].id] ?? 0 };
+        mostrarProducto(primero);
+        actualizarSugeridos();
+    }
+
+    /* -----------------------------------------------------------------------
+       2. MOSTRAR PRODUCTO SELECCIONADO EN EL PANEL SUPERIOR
+    ----------------------------------------------------------------------- */
+    function mostrarProducto(producto) {
+        if (!producto) return;
+        productoActual = producto;
+
+        const costo = parseFloat(producto.precio_costo || 0);
+        const venta = parseFloat(producto.precio_venta  || 0);
+        const margen = costo > 0 ? ((venta - costo) / costo) * 100 : 0;
+
+        if (productName)    productName.textContent = producto.nombre || '—';
+        if (productOldCost) productOldCost.innerHTML = `<del>S/. ${costo.toFixed(2)}</del>`;
+        if (productNewCost) productNewCost.textContent = `S/. ${venta.toFixed(2)}`;
+
+        if (productChangeBadge) {
+            const positivo = margen >= 0;
+            productChangeBadge.className = `price-change-badge ${positivo ? 'price-up' : 'price-down'}`;
+            productChangeBadge.textContent = `${positivo ? '+' : ''}${margen.toFixed(1)}% margen`;
         }
-      });
 
-      const primerProducto = data[0];
-      selectInventario.value = primerProducto.id;
-      seleccionarProducto(primerProducto);
-      if (listaProductosInventario) actualizarSeleccionVisual(primerProducto.id);
-    } catch (err) {
-      console.error('[Precios] Excepción cargando productos:', err);
+        actualizarSugeridos();
     }
-  }
 
-  function activarTarjeta(tarjetaSeleccionada) {
-    tarjetas.forEach((tarjeta) => {
-      const esManual = tarjeta.dataset.estrategia === 'manual';
-      const estaActiva = tarjeta === tarjetaSeleccionada;
+    /* -----------------------------------------------------------------------
+       3. CÁLCULO DE PRECIO SUGERIDO POR ESTRATEGIA
+    ----------------------------------------------------------------------- */
+    function calcularSugerido(producto, estrategia) {
+        const costo = parseFloat(producto.precio_costo || 0);
+        const venta = parseFloat(producto.precio_venta  || 0);
 
-      tarjeta.classList.toggle('activa', estaActiva);
-
-      if (esManual && manualInput) {
-        manualInput.disabled = !estaActiva;
-      }
-
-      if (estaActiva) {
-        estrategiaSeleccionada = tarjeta.dataset.estrategia || 'ponderado';
-      }
-    });
-
-    if (estrategiaSeleccionada === 'manual' && manualPriceInput) {
-      manualPriceInput.disabled = false;
-      manualPriceInput.focus();
-    } else if (manualPriceInput) {
-      manualPriceInput.disabled = true;
-      manualPriceInput.value = '';
-    }
-  }
-
-  function actualizarSeleccionVisual(productoId) {
-    if (!listaProductosInventario) return;
-    const items = listaProductosInventario.querySelectorAll('.inventory-product-item');
-    items.forEach((item) => {
-      item.classList.toggle('selected', item.dataset.id === String(productoId));
-    });
-  }
-
-  tarjetas.forEach((tarjeta) => {
-    tarjeta.addEventListener('click', () => activarTarjeta(tarjeta));
-  });
-
-  function calcularPrecioSugerido(producto, estrategia) {
-    const costo = Number(producto.precio_costo || 0);
-    const venta = Number(producto.precio_venta || 0);
-    if (estrategia === 'manual') {
-      return manualPriceInput && manualPriceInput.value ? Number(manualPriceInput.value) : venta;
-    }
-    if (estrategia === 'fifo') {
-      return Number((venta + costo * 0.15).toFixed(2));
-    }
-    const margen = 0.35;
-    return Number((costo * (1 + margen)).toFixed(2));
-  }
-
-  function actualizarPreciosSugeridos() {
-    tarjetas.forEach((tarjeta) => {
-      const label = tarjeta.querySelector('.strategy-suggestion');
-      if (!label) return;
-      const estrategia = tarjeta.dataset.estrategia || (tarjeta.classList.contains('active') ? 'ponderado' : '');
-      const producto = productoActual || { precio_costo: 0, precio_venta: 0 };
-      const precioSugerido = calcularPrecioSugerido(producto, estrategia);
-      label.textContent = `Precio sugerido: S/. ${precioSugerido.toFixed(2)}`;
-    });
-  }
-
-  if (selectInventario) {
-    selectInventario.addEventListener('change', () => {
-      const productoSeleccionado = productosPorId.get(selectInventario.value);
-      seleccionarProducto(productoSeleccionado);
-      actualizarPreciosSugeridos();
-    });
-    cargarProductosInventario();
-  }
-
-  tarjetas.forEach((tarjeta) => {
-    tarjeta.addEventListener('click', () => {
-      activarTarjeta(tarjeta);
-      actualizarPreciosSugeridos();
-    });
-  });
-
-  if (applyStrategyButton) {
-    applyStrategyButton.addEventListener('click', async () => {
-      if (!productoActual) return;
-      let precioFinal = calcularPrecioSugerido(productoActual, estrategiaSeleccionada);
-      if (estrategiaSeleccionada === 'manual' && manualPriceInput) {
-        const manual = Number(manualPriceInput.value);
-        if (isNaN(manual) || manual <= 0) {
-          alert('Ingresa un precio manual válido.');
-          return;
+        switch (estrategia) {
+            case 'ponderado':
+                // Margen fijo del 35% sobre el costo
+                return costo > 0 ? parseFloat((costo * 1.35).toFixed(2)) : venta;
+            case 'fifo':
+                // Mantener el precio de venta anterior (stock viejo se vende al precio viejo)
+                return venta;
+            case 'manual':
+                const val = parseFloat(manualPriceInput?.value || 0);
+                return val > 0 ? val : venta;
+            default:
+                return venta;
         }
-        precioFinal = manual;
-      }
+    }
 
-      try {
-        const { error } = await supabaseClient
-          .from('productos')
-          .update({ precio_venta: precioFinal })
-          .eq('id', productoActual.id);
+    function actualizarSugeridos() {
+        if (!productoActual) return;
+        tarjetas.forEach(t => {
+            const label = t.querySelector('.strategy-suggestion');
+            if (!label) return;
+            const est   = t.dataset.estrategia;
+            const precio = calcularSugerido(productoActual, est);
+            label.textContent = `Precio sugerido: S/. ${precio.toFixed(2)}`;
+        });
+    }
+
+    /* -----------------------------------------------------------------------
+       4. SELECCIÓN DE TARJETA DE ESTRATEGIA
+    ----------------------------------------------------------------------- */
+    tarjetas.forEach(t => {
+        t.addEventListener('click', () => {
+            tarjetas.forEach(x => x.classList.remove('activa', 'active'));
+            t.classList.add('activa', 'active');
+            estrategiaActual = t.dataset.estrategia || 'ponderado';
+
+            // Habilitar/deshabilitar input manual
+            if (manualPriceInput) {
+                manualPriceInput.disabled = estrategiaActual !== 'manual';
+                if (estrategiaActual === 'manual') {
+                    manualPriceInput.value = '';
+                    manualPriceInput.focus();
+                } else {
+                    manualPriceInput.value = '';
+                }
+            }
+
+            actualizarSugeridos();
+        });
+    });
+
+    if (manualPriceInput) {
+        manualPriceInput.addEventListener('input', actualizarSugeridos);
+    }
+
+    /* -----------------------------------------------------------------------
+       5. CAMBIO DE PRODUCTO EN EL SELECT
+    ----------------------------------------------------------------------- */
+    selectInventario?.addEventListener('change', () => {
+        const prod = productosPorId.get(selectInventario.value);
+        if (prod) mostrarProducto(prod);
+    });
+
+    /* -----------------------------------------------------------------------
+       6. APLICAR ESTRATEGIA → actualiza precio_venta + guarda en historial_precios
+    ----------------------------------------------------------------------- */
+    applyStrategyBtn?.addEventListener('click', async () => {
+        if (!productoActual) { alert('Selecciona un producto.'); return; }
+
+        let precioFinal = calcularSugerido(productoActual, estrategiaActual);
+
+        if (estrategiaActual === 'manual') {
+            const manual = parseFloat(manualPriceInput?.value || 0);
+            if (isNaN(manual) || manual <= 0) {
+                alert('Ingresa un precio manual válido.');
+                return;
+            }
+            precioFinal = manual;
+        }
+
+        const precioAnterior = parseFloat(productoActual.precio_venta || 0);
+
+        if (precioFinal === precioAnterior) {
+            alert('El precio nuevo es igual al actual. No se realizaron cambios.');
+            return;
+        }
+
+        applyStrategyBtn.disabled     = true;
+        applyStrategyBtn.textContent  = '⏳ Aplicando...';
+
+        try {
+            // Actualizar precio_venta en productos
+            const { error: errUpdate } = await supabaseClient
+                .from('productos')
+                .update({ precio_venta: precioFinal })
+                .eq('id', productoActual.id);
+
+            if (errUpdate) throw errUpdate;
+
+            // Guardar en historial_precios
+            const tipoCambio = precioFinal > precioAnterior ? 'Subió' : 'Bajó';
+
+            const { error: errHist } = await supabaseClient
+                .from('historial_precios')
+                .insert({
+                    producto_id:    productoActual.id,
+                    precio_anterior: precioAnterior,
+                    precio_nuevo:    precioFinal,
+                    tipo_cambio:     tipoCambio
+                });
+
+            if (errHist) console.warn('Precio actualizado pero no se guardó en historial:', errHist);
+
+            // Actualizar estado local
+            productoActual.precio_venta = precioFinal;
+            productosPorId.set(String(productoActual.id), { ...productoActual });
+            mostrarProducto(productoActual);
+
+            // Refrescar historial
+            await cargarHistorial();
+
+            alert(`✅ Precio actualizado a S/. ${precioFinal.toFixed(2)}`);
+
+        } catch (err) {
+            console.error('[Precios] Error:', err);
+            alert('❌ Error al actualizar el precio.');
+        } finally {
+            applyStrategyBtn.disabled    = false;
+            applyStrategyBtn.textContent = 'Aplicar Estrategia';
+        }
+    });
+
+    /* -----------------------------------------------------------------------
+       7. CARGAR HISTORIAL REAL DESDE historial_precios
+    ----------------------------------------------------------------------- */
+    async function cargarHistorial() {
+        const tbody = document.getElementById('historial-precios-tbody');
+        if (!tbody) return;
+
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">
+            ⏳ Cargando historial...
+        </td></tr>`;
+
+        const { data, error } = await supabaseClient
+            .from('historial_precios')
+            .select(`
+                id_historial,
+                precio_anterior,
+                precio_nuevo,
+                tipo_cambio,
+                fecha_cambio,
+                productos ( nombre )
+            `)
+            .order('fecha_cambio', { ascending: false })
+            .limit(20);
 
         if (error) {
-          console.error('[Precios] Error actualizando precio:', error);
-          alert('No se pudo actualizar el precio. Revisa la consola.');
-          return;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;padding:20px;">
+                ❌ Error al cargar historial.
+            </td></tr>`;
+            return;
         }
 
-        productoActual.precio_venta = precioFinal;
-        mostrarProductoSeleccionado(productoActual);
-        actualizarPreciosSugeridos();
-        alert('Precio actualizado correctamente.');
-      } catch (err) {
-        console.error('[Precios] Excepción actualizando precio:', err);
-        alert('Error al actualizar el precio.');
-      }
-    });
-  }
+        if (!data?.length) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">
+                No hay cambios de precio registrados aún.
+            </td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = data.map(h => {
+            const fecha  = new Date(h.fecha_cambio).toLocaleDateString('es-PE');
+            const subio  = h.tipo_cambio === 'Subió';
+            const pill   = subio
+                ? `<span class="change-pill change-up">📈 Subió</span>`
+                : `<span class="change-pill change-down">📉 Bajó</span>`;
+            return `<tr>
+                <td>${h.productos?.nombre || '—'}</td>
+                <td>${pill}</td>
+                <td>S/. ${parseFloat(h.precio_anterior).toFixed(2)}</td>
+                <td><strong>S/. ${parseFloat(h.precio_nuevo).toFixed(2)}</strong></td>
+                <td>${fecha}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    /* -----------------------------------------------------------------------
+       INICIALIZACIÓN
+    ----------------------------------------------------------------------- */
+    await cargarProductos();
+    await cargarHistorial();
 }
