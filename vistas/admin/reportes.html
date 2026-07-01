@@ -1,47 +1,81 @@
-<div class="welcome-banner" style="margin-bottom: 24px;">
-    <h2 style="font-size: 2.2rem; margin-bottom: 6px;">📊 Reportes y Analítica Avanzada</h2>
-    <p style="font-size: 1.15rem; color: #64748b;">Consulta el consolidado de movimientos y analiza el rendimiento del negocio en tiempo real</p>
-</div>
+<div class="reportes-contenedor">
 
-<div style="background:white; padding:32px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <label style="font-weight:600; font-size:16px; color:#1e293b;">Tipo de Reporte:</label>
-        <select id="reporte-tipo" style="padding:14px 20px; font-size:16px; border-radius:6px; border:1px solid #cbd5e1; background-color:white; min-width:260px; cursor:pointer;">
-            <option value="ventas">Consolidado de Ventas</option>
-            <option value="inventario">Estado de Inventario (Stock)</option>
-        </select>
+  <div class="reportes-cabecera">
+    <div>
+      <h2>📊 Reportes y Analítica</h2>
+      <p>Consulta el rendimiento del negocio en tiempo real</p>
     </div>
-    
-    <div style="display:flex; gap:14px;">
-        <button id="btn-exportar-excel" style="background:#16a34a; color:white; border:none; padding:14px 24px; border-radius:6px; font-size:15px; font-weight:700; cursor:pointer; transition: background 0.2s;">
-            🟢 Exportar Excel (.csv)
-        </button>
-        <button id="btn-imprimir-pdf" style="background:#dc2626; color:white; border:none; padding:14px 24px; border-radius:6px; font-size:15px; font-weight:700; cursor:pointer; transition: background 0.2s;">
-            🔴 Imprimir / Guardar PDF
-        </button>
+    <div class="reportes-acciones">
+      <button id="btn-exportar-excel" class="btn-exportar">🟢 Exportar CSV</button>
+      <button id="btn-imprimir-pdf"   class="btn-imprimir">🔴 Imprimir PDF</button>
     </div>
+  </div>
 
-<div style="background:white; padding:32px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-    <h3 id="grafico-titulo" style="margin-bottom:20px; color:#1e293b; font-size:1.4rem; font-weight:600;">📈 Gráfico Estadístico de Resumen</h3>
-    <div style="height: 420px; position: relative; width: 100%;">
-        <canvas id="graficoReporte"></canvas>
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icono" style="background:#dbeafe;">💰</div>
+      <div class="kpi-info">
+        <p class="kpi-label">Ingresos Totales</p>
+        <p class="kpi-valor" id="kpi-ingresos">S/ 0.00</p>
+      </div>
     </div>
+    <div class="kpi-card">
+      <div class="kpi-icono" style="background:#dcfce7;">🛒</div>
+      <div class="kpi-info">
+        <p class="kpi-label">Total de Ventas</p>
+        <p class="kpi-valor" id="kpi-ventas">0</p>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icono" style="background:#fef9c3;">🧾</div>
+      <div class="kpi-info">
+        <p class="kpi-label">Ticket Promedio</p>
+        <p class="kpi-valor" id="kpi-promedio">S/ 0.00</p>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icono" style="background:#fee2e2;">⚠️</div>
+      <div class="kpi-info">
+        <p class="kpi-label">Stock Bajo</p>
+        <p class="kpi-valor" id="kpi-stock-bajo">0 productos</p>
+      </div>
+    </div>
+  </div>
 
-<div style="background:white; padding:32px; border-radius:12px; border:1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-    <h3 id="reporte-titulo" style="margin-bottom:20px; color:#1e293b; font-size:1.4rem; font-weight:600;">Consolidado de Ventas</h3>
+  <!-- Selector -->
+  <div class="reportes-selector-card">
+    <label class="selector-label">Tipo de Reporte:</label>
+    <select id="reporte-tipo" class="selector-reporte">
+      <option value="ventas">📈 Evolución de Ventas</option>
+      <option value="metodo-pago">💳 Ventas por Método de Pago</option>
+      <option value="top-productos">🏆 Top Productos Más Vendidos</option>
+      <option value="ventas-dia">📅 Ventas por Día de la Semana</option>
+      <option value="inventario">📦 Estado de Inventario</option>
+      <option value="margen-ganancia">💹 Margen de Ganancia por Producto</option>
+      <option value="hora-pico">🕐 Hora Pico de Ventas</option>
+    </select>
+  </div>
+
+  <!-- Gráfico -->
+  <div class="reporte-chart-card">
+    <h3 id="grafico-titulo" class="reporte-chart-titulo">📈 Evolución de Ventas</h3>
+    <div class="reporte-chart-wrapper">
+      <canvas id="graficoReporte"></canvas>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="reporte-tabla-card">
+    <h3 id="reporte-titulo" class="reporte-tabla-titulo">Consolidado de Ventas</h3>
     <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; font-size:16px;">
-            <thead id="tabla-reporte-head" style="background-color:#f8fafc;">
-                </thead>
-            <tbody id="tabla-reporte-body" style="color: #334155;">
-                <tr>
-                    <td style="text-align:center; padding:30px; color:#64748b; font-size:16px;">
-                        Cargando datos del reporte...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      <table class="tabla-reporte">
+        <thead id="tabla-reporte-head"></thead>
+        <tbody id="tabla-reporte-body">
+          <tr><td colspan="6" class="tabla-cargando">⏳ Cargando datos...</td></tr>
+        </tbody>
+      </table>
     </div>
-</div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
