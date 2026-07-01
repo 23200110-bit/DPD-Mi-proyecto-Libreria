@@ -1,53 +1,57 @@
 <div class="admin-subview active">
-    <div class="welcome-banner">
-        <h2>📋 Gestión de Empleados</h2>
-        <p>Administra los accesos y roles de tus vendedores autorizados del establecimiento.</p>
+    <div class="welcome-banner" style="margin-bottom: 24px;">
+        <h2 style="font-size: 2.2rem; margin-bottom: 6px;">📝 Gestión de Empleados</h2>
+        <p style="font-size: 1.15rem; color: #64748b;">Administra los accesos y roles de tus vendedores autorizados del establecimiento</p>
     </div>
 
-    <div class="operaciones-box" style="margin-bottom: 25px; padding: 20px !important; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
-        <h3 style="margin-top: 0; margin-bottom: 15px; color: #1e293b; font-size: 16px; font-weight: 600;">👤 Registrar Nuevo Personal</h3>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-            <div class="form-group-vendedor" style="flex: 1; min-width: 200px; margin-bottom: 0 !important;">
-                <input id="empleado-nombre" type="text" placeholder="Nombre completo" style="width: 100%;">
-            </div>
-            <div class="form-group-vendedor" style="flex: 1; min-width: 200px; margin-bottom: 0 !important;">
-                <input id="empleado-email" type="email" placeholder="Correo electrónico" style="width: 100%;">
-            </div>
-            <div class="form-group-vendedor" style="flex: 1; min-width: 150px; margin-bottom: 0 !important;">
-                <input id="empleado-password" type="password" placeholder="Contraseña de acceso" style="width: 100%;">
-            </div>
-            <div class="form-group-vendedor" style="width: 160px; margin-bottom: 0 !important;">
-                <select id="empleado-rol" style="width: 100%;">
-                    <option value="empleado">👤 Empleado</option>
-                    <option value="admin">🔑 Administrador</option>
-                </select>
-            </div>
-            <button id="btn-guardar-empleado" class="btn-action" style="padding: 0 24px !important; height: 40px; background-color: #0284c7; color: white; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);" title="Guardar cambios">
+    <div style="background: white; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; font-size: 1.4rem; font-weight: 600;">👤 Registrar Empleado</h3>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; width: 100%;">
+            <input id="empleado-nombre" type="text" placeholder="Nombre completo" required 
+                   style="flex: 2; min-width: 240px; padding: 14px 20px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; color: #334155;">
+            
+            <input id="empleado-email" type="email" placeholder="Correo electrónico" required 
+                   style="flex: 2; min-width: 240px; padding: 14px 20px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; color: #334155;">
+            
+            <input id="empleado-password" type="password" placeholder="Contraseña de acceso" required 
+                   style="flex: 1.5; min-width: 200px; padding: 14px 20px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; color: #334155;">
+
+            <select id="empleado-rol" 
+                    style="flex: 1; min-width: 160px; padding: 14px 20px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; box-sizing: border-box; cursor: pointer; color: #334155; font-weight: 500;">
+                <option value="empleado">👤 Empleado</option>
+                <option value="admin">🔑 Administrador</option>
+            </select>
+            
+            <button id="btn-guardar-empleado" 
+                    style="padding: 14px 32px; font-size: 16px; font-weight: 700; background-color: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; min-width: 130px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                 Guardar
             </button>
         </div>
     </div>
 
-    <div class="carrito-box" style="padding: 20px !important; overflow-x: auto; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
-        <h3 style="margin-top: 0; margin-bottom: 15px; color: #1e293b; font-size: 16px; font-weight: 600;">📋 Lista de Personal Autorizado</h3>
-        <table style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
-            <thead>
-                <tr style="color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">
-                    <th style="width: 60px; padding: 12px 16px; text-align: left;">ID</th>
-                    <th style="text-align: left; padding: 12px 16px;">Nombre</th>
-                    <th style="text-align: left; padding: 12px 16px;">Email</th>
-                    <th style="text-align: left; padding: 12px 16px; width: 140px;">Rol</th>
-                    <th style="text-align: left; padding: 12px 16px; width: 150px;">Fecha Registro</th>
-                    <th style="text-align: center; padding: 12px 16px; width: 160px;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-empleados">
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: #64748b; font-size: 15px;">
-                        ⏳ Cargando personal oficial...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div style="background: white; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; font-size: 1.4rem; font-weight: 600;">📋 Lista de Empleados</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 16px;">
+                <thead>
+                    <tr style="background-color: #f8fafc; color: #64748b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0;">
+                        <th style="padding: 16px; text-align: left; width: 80px;">ID</th>
+                        <th style="padding: 16px; text-align: left;">Nombre</th>
+                        <th style="padding: 16px; text-align: left;">Email</th>
+                        <th style="padding: 16px; text-align: left; width: 160px;">Rol</th>
+                        <th style="padding: 16px; text-align: left; width: 160px;">Fecha Registro</th>
+                        <th style="padding: 16px; text-align: center; width: 220px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-empleados" style="color: #334155;">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; font-size: 16px; color: #64748b;">
+                            ⏳ Cargando empleados...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
