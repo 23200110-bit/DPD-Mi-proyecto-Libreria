@@ -59,6 +59,7 @@ function configurarEventosCompras() {
                             categoria,
                             stock_actual: nuevoStock,
                             precio_venta: precioVenta,
+                            precio_costo: precioCosto,
                             stock_minimo_alerta: stockMinimo
                         })
                         .eq('id', productoIdFinal);
@@ -70,6 +71,7 @@ function configurarEventosCompras() {
                         categoria,
                         stock_actual: cantidadComprada,
                         precio_venta: precioVenta,
+                        precio_costo: precioCosto,
                         stock_minimo_alerta: stockMinimo
                     };
 
