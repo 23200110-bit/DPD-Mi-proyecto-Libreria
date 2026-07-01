@@ -7,6 +7,33 @@
   <button class="btn-acceso">📦 Consultar Inventario</button>
   <button class="btn-acceso">📋 Realizar Conteo</button>
 </div>
+<div class="dashboard-resumen">
+
+  <div class="dashboard-card">
+    <span class="icono">🛒</span>
+    <h3 id="ventas-hoy">0</h3>
+    <p>Ventas de hoy</p>
+  </div>
+
+  <div class="dashboard-card">
+    <span class="icono">📦</span>
+    <h3 id="productos-total">0</h3>
+    <p>Productos registrados</p>
+  </div>
+
+  <div class="dashboard-card">
+    <span class="icono">⚠️</span>
+    <h3 id="stock-bajo">0</h3>
+    <p>Stock bajo</p>
+  </div>
+
+  <div class="dashboard-card">
+    <span class="icono">📋</span>
+    <h3 id="conteos-pendientes">0</h3>
+    <p>Conteos pendientes</p>
+  </div>
+
+</div>
 
   <div class="buscador-productos">
     <h2>Buscar Producto</h2>
@@ -22,3 +49,31 @@
 <div class="resultado-producto" id="resultado-producto">
   
 </div>
+
+<section class="ultimas-ventas">
+
+    <h2>🧾 Últimas ventas</h2>
+
+    <table class="tabla-dashboard">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Comprobante</th>
+                <th>Método</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+
+        <tbody id="tabla-ultimas-ventas">
+
+            <tr>
+                <td colspan="5">Cargando...</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</section>

@@ -578,12 +578,7 @@ function renderGrafico(tipo, labels, valores, labelDataset, colorFondo, colorBor
             scales: esDoughnut ? {} : {
                 y: {
                     beginAtZero: true,
-                    grid: { color: '#f1f5f9' },
-                    ticks: { color: '#64748b', font: { size: 11 } }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#64748b', font: { size: 11 } }
+                    ticks: { stepSize: 1 } // Ideal para contar números enteros (ventas/unidades)
                 }
             }
         }
