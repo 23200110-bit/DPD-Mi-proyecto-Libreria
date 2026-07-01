@@ -1,92 +1,135 @@
-<div class="welcome-banner">
-    <h2>Gestión de Precios</h2>
-    <p>Administra los precios de tus productos</p>
-</div>
-
-<div class="prices-strategy-card">
-    <div class="provider-change-alert">
-        <span>⚠️</span>
+<div class="prices-page">
+    <section class="prices-header">
         <div>
-            <strong>Cambio de Precio de Proveedor</strong>
-            <p>El proveedor ha actualizado el costo de un producto</p>
+            <p class="section-label">Gestión de precios</p>
+            <h2>Administra los precios de tus productos</h2>
+            <p class="section-description">Revisa cambios de costo de proveedor, elige tu estrategia de precios y aplica ajustes con un solo clic.</p>
         </div>
-    </div>
+    </section>
 
-    <div class="product-cost-impact-box">
-        <h4>Papel bond A4 80g 500 hojas</h4>
-        <div class="product-impact-flex">
-            <span>Costo anterior: <del>S/. 21.60</del></span>
-            <span>Nuevo costo: <strong style="color: #dc2626;">S/. 24.00</strong></span>
-            <span class="percentage-badge-increase">+11.1% aumento</span>
+    <section class="prices-panel">
+        <div class="prices-main-card">
+            <div class="top-notice-card">
+                <div class="notice-icon">⚠️</div>
+                <div>
+                    <p class="notice-title">Cambio de Precio de Proveedor</p>
+                    <p class="notice-text">El proveedor ha actualizado el costo de un producto</p>
+                </div>
+            </div>
+
+            <div class="product-summary-card">
+                <div class="product-summary-top">
+                    <div>
+                        <p class="label-sm">Producto seleccionado</p>
+                        <h3 id="product-selected-name">Artículo genérico</h3>
+                    </div>
+                    <span id="product-change-badge" class="price-change-badge price-up">+0.0% aumento</span>
+                </div>
+
+                <div class="product-summary-values">
+                    <div>
+                        <span class="summary-label">Costo anterior</span>
+                        <p id="product-old-cost" class="value-muted"><del>S/. 0.00</del></p>
+                    </div>
+                    <div>
+                        <span class="summary-label">Nuevo costo</span>
+                        <p id="product-new-cost" class="value-strong">S/. 0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label for="select-inventory">Selecciona un Inventario:</label>
+                <select id="select-inventory">
+                    <option>Artículo genérico</option>
+                </select>
+            </div>
+
+            <div class="price-strategy-section">
+                <p class="label-sm">Selecciona una estrategia de precios:</p>
+                <div class="strategy-options-grid">
+                    <button type="button" class="strategy-card active" data-estrategia="ponderado">
+                        <div class="strategy-card-title">
+                            <span class="strategy-icon">💰</span>
+                            <div>
+                                <strong>Precio Promedio Ponderado</strong>
+                                <p>Calcula automáticamente el precio sugerido basado en el costo promedio.</p>
+                            </div>
+                        </div>
+                        <p class="strategy-suggestion">Precio sugerido: S/. 0.00</p>
+                    </button>
+
+                    <button type="button" class="strategy-card" data-estrategia="fifo">
+                        <div class="strategy-card-title">
+                            <span class="strategy-icon">📦</span>
+                            <div>
+                                <strong>PEPS / FIFO</strong>
+                                <p>Vende primero el stock antiguo al precio anterior.</p>
+                            </div>
+                        </div>
+                        <p class="strategy-suggestion">Precio sugerido: S/. 0.00</p>
+                    </button>
+
+                    <button type="button" class="strategy-card" data-estrategia="manual">
+                        <div class="strategy-card-title">
+                            <span class="strategy-icon">✏️</span>
+                            <div>
+                                <strong>Precio Manual</strong>
+                                <p>Ingresa el precio de venta que desees</p>
+                            </div>
+                        </div>
+                        <input id="manual-price-input" type="text" class="precio-manual-input" placeholder="S/. 0.00" disabled>
+                    </button>
+                </div>
+            </div>
+
+            <button id="btn-apply-strategy" class="btn-apply-strategy-action">Aplicar Estrategia</button>
         </div>
-    </div>
 
-    <div class="form-row-single">
-        <label>Selecciona un Inventario:</label>
-        <select>
-            <option>Papel bond A4 80g 500 hojas</option>
-        </select>
-    </div>
+        <div class="price-history-card">
+            <div class="history-topbar">
+                <div>
+                    <p class="label-sm">Historial de Cambios de Precio</p>
+                    <h3>Registro de cambios recientes</h3>
+                </div>
+            </div>
 
-    <label style="font-size: 14px; font-weight: 600; display: block; margin: 16px 0 8px;">Selecciona una estrategia de precios:</label>
-    <div class="strategy-options-grid">
-        <div class="strategy-option-box selected">
-            <strong>Precio Promedio Ponderado</strong>
-            <p>Calcula automáticamente el precio sugerido basado en el costo promedio.</p>
-            <span style="display: block; margin-top: 8px; color: #0284c7; font-weight: bold;">Precio sugerido: S/. 31.11</span>
+            <div class="table-scroll">
+                <table class="prices-history-table">
+                    <thead>
+                        <tr>
+                            <th>Inventario</th>
+                            <th>Cambio</th>
+                            <th>Precio anterior</th>
+                            <th>Precio nuevo</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Papel bond A4 80g 500 hojas</td>
+                            <td><span class="change-pill change-up">📈 Subió</span></td>
+                            <td>S/. 24.00</td>
+                            <td><strong>S/. 28.00</strong></td>
+                            <td>09/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>Colores Faber-Castell x24 largos</td>
+                            <td><span class="change-pill change-up">📈 Subió</span></td>
+                            <td>S/. 22.50</td>
+                            <td><strong>S/. 24.90</strong></td>
+                            <td>07/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>Borrador Faber-Castell PVC 20</td>
+                            <td><span class="change-pill change-down">📉 Bajó</span></td>
+                            <td>S/. 1.50</td>
+                            <td><strong>S/. 1.20</strong></td>
+                            <td>04/05/2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="strategy-option-box">
-            <strong>PEPS / FIFO</strong>
-            <p>Vende primero el stock antiguo al precio anterior.</p>
-            <span style="display: block; margin-top: 8px; color: #0284c7; font-weight: bold;">Precio sugerido: S/. 28.00</span>
-        </div>
-
-        <div class="strategy-option-box">
-            <strong>Precio Manual</strong>
-            <p>Ingresa el precio de venta que desees de manera personalizada.</p>
-        </div>
-    </div>
-
-    <button class="btn-apply-strategy-action" onclick="alert('Estrategia de precio aplicada')">✓ Aplicar Estrategia</button>
-</div>
-
-<div class="price-history-container">
-    <h3>$ Historial de Cambios de Precio</h3>
-    <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Registro de todos los cambios de precio realizados</p>
-
-    <table class="prices-history-table">
-        <thead>
-            <tr>
-                <th>Inventario</th>
-                <th>Cambio</th>
-                <th>Precio Anterior</th>
-                <th>Precio Nuevo</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Papel bond A4 80g 500 hojas</td>
-                <td><span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📈 Subió</span></td>
-                <td>S/. 24.00</td>
-                <td><strong>S/. 28.00</strong></td>
-                <td>09/05/2026</td>
-            </tr>
-            <tr>
-                <td>Colores Faber-Castell x24 largos</td>
-                <td><span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📈 Subió</span></td>
-                <td>S/. 22.50</td>
-                <td><strong>S/. 24.90</strong></td>
-                <td>07/05/2026</td>
-            </tr>
-            <tr>
-                <td>Borrador Faber-Castell PVC 20</td>
-                <td><span style="background: #dcfce7; color: #16a34a; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📉 Bajó</span></td>
-                <td>S/. 1.50</td>
-                <td><strong>S/. 1.20</strong></td>
-                <td>04/05/2026</td>
-            </tr>
-        </tbody>
-    </table>
+    </section>
 </div>

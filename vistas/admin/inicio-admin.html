@@ -11,7 +11,7 @@
                 <span class="kpi-icon kpi-icon--blue" aria-hidden="true">📦</span>
                 <span class="kpi-card__title">Total Productos</span>
             </div>
-            <p id="total-productos-count" class="kpi-card__value">38</p>
+            <p id="total-productos-count" class="kpi-card__value">0</p>
             <p class="kpi-card__description">productos registrados</p>
         </article>
 
@@ -20,7 +20,7 @@
                 <span class="kpi-icon kpi-icon--orange" aria-hidden="true">⚠️</span>
                 <span class="kpi-card__title">Stock Bajo</span>
             </div>
-            <p id="stock-bajo-count" class="kpi-card__value kpi-card__value--orange">5</p>
+            <p id="stock-bajo-count" class="kpi-card__value kpi-card__value--orange">0</p>
             <p class="kpi-card__description">productos por reponer</p>
         </article>
 
@@ -29,7 +29,7 @@
                 <span class="kpi-icon kpi-icon--blue" aria-hidden="true">📉</span>
                 <span class="kpi-card__title">Sin Movimiento</span>
             </div>
-            <p id="sin-movimiento-count" class="kpi-card__value kpi-card__value--blue">3</p>
+            <p id="sin-movimiento-count" class="kpi-card__value kpi-card__value--blue">0</p>
             <p class="kpi-card__description">productos estancados</p>
         </article>
 
@@ -38,7 +38,7 @@
                 <span class="kpi-icon kpi-icon--gold" aria-hidden="true">💰</span>
                 <span class="kpi-card__title">Capital en Stock</span>
             </div>
-            <p id="capital-stock-count" class="kpi-card__value kpi-card__value--gold">S/ 6257.00</p>
+            <p id="capital-stock-count" class="kpi-card__value kpi-card__value--gold">S/ 0.00</p>
             <p class="kpi-card__description">invertido en productos</p>
         </article>
 
@@ -70,46 +70,13 @@
             <span id="active-alerts-badge" class="alerts-badge alerts-badge--red">8 alertas</span>
         </header>
 
-        <ol class="alerts-list">
-            <li class="alert-item">
-                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
+        <ol id="alerts-list" class="alerts-list">
+            <li class="alert-item alert-item--empty">
+                <span class="alert-item__icon" aria-hidden="true">✅</span>
                 <div class="alert-item__content">
-                    <strong>Lapicero Pilot G2 0.5 negro</strong>
-                    <p>Stock CRÍTICO - Solo quedan 2 unidades</p>
+                    <strong>Buscando alertas en la base de datos...</strong>
+                    <p>Se mostrarán los productos con stock bajo o agotados.</p>
                 </div>
-                <span id="alert-badge-1" class="alert-badge alert-badge--orange">Stock Bajo</span>
-            </li>
-            <li class="alert-item">
-                <span class="alert-item__icon alert-item__icon--red" aria-hidden="true">⛔</span>
-                <div class="alert-item__content">
-                    <strong>Plumón Artesco delgado x10</strong>
-                    <p>AGOTADO - Sin stock disponible</p>
-                </div>
-                <span id="alert-badge-2" class="alert-badge alert-badge--red">Agotado</span>
-            </li>
-            <li class="alert-item">
-                <span class="alert-item__icon alert-item__icon--red" aria-hidden="true">⛔</span>
-                <div class="alert-item__content">
-                    <strong>Témperas Artesco x6 colores</strong>
-                    <p>AGOTADO - Sin stock disponible</p>
-                </div>
-                <span id="alert-badge-3" class="alert-badge alert-badge--red">Agotado</span>
-            </li>
-            <li class="alert-item">
-                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
-                <div class="alert-item__content">
-                    <strong>Cuaderno Deluxe tapa dura A5</strong>
-                    <p>Stock bajo - Quedan 3 unidades</p>
-                </div>
-                <span id="alert-badge-4" class="alert-badge alert-badge--orange">Stock Bajo</span>
-            </li>
-            <li class="alert-item">
-                <span class="alert-item__icon alert-item__icon--orange" aria-hidden="true">⚠️</span>
-                <div class="alert-item__content">
-                    <strong>Plastilina Artesco x10 colores</strong>
-                    <p>Stock bajo - Quedan 5 unidades</p>
-                </div>
-                <span id="alert-badge-5" class="alert-badge alert-badge--orange">Stock Bajo</span>
             </li>
         </ol>
 

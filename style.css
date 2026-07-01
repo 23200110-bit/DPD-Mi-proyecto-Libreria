@@ -15,4 +15,5 @@
 /* 4. Estilos de Pantallas Individuales (Módulos) */
 @import url('css/modulos/inicio.css');
 @import url('css/modulos/ventas.css');
+@import url('css/modulos/precios.css');
 /* Nota: Conforme llenemos compras, precios, caja, etc., agregaremos sus @import aquí */

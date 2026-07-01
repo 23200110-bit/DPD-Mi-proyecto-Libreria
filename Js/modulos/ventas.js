@@ -429,7 +429,8 @@ async function confirmarVenta() {
         const datosVenta = {
             tipo_comprobante: tipoComprobante,
             metodo_pago:      metodoPago,
-            total_cobrado:    total
+            total_cobrado:    total,
+            fecha_hora:       new Date().toISOString()
             // empleado_id: TODO → asignar cuando esté el módulo de sesión
         };
         if (tipoComprobante === 'Factura') {
@@ -439,15 +440,16 @@ async function confirmarVenta() {
 
         const { data: ventaCreada, error: errorVenta } = await supabaseClient
             .from('ventas')
-            .insert(datosVenta)
+            .insert([datosVenta])
             .select()
             .single();
 
         if (errorVenta) throw errorVenta;
 
         // 2. Insertar el detalle de cada producto
+        const ventaIdFinal = ventaCreada.id_venta || ventaCreada.id;
         const detalles = CARRITO.map(item => ({
-            venta_id:        ventaCreada.id_venta,
+            venta_id:        ventaIdFinal,
             producto_id:     item.id,
             cantidad:        item.cantidad,
             precio_unitario: item.precio
@@ -479,6 +481,7 @@ async function confirmarVenta() {
         limpiarCarrito();
         await cargarProductos();
         await cargarHistorial();
+        window.dispatchEvent(new CustomEvent('dashboard:refresh'));
 
     } catch (err) {
         console.error('Error al registrar la venta:', err);
