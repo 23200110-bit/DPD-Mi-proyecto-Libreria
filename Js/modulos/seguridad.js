@@ -3,7 +3,29 @@ import { supabaseClient } from '../supabase-config.js';
 let listaAuditoria = [];
 
 export async function inicializarSeguridad() {
+
     await cargarAuditoria();
+
+    const buscador = document.getElementById("buscar-seguridad");
+
+    if (buscador) {
+
+        buscador.addEventListener("input", (e) => {
+
+            renderizarAuditoria(e.target.value);
+
+        });
+
+    }
+
+    const btnConsejos = document.getElementById("btn-consejos");
+
+    if (btnConsejos) {
+
+        btnConsejos.addEventListener("click", mostrarConsejos);
+
+    }
+
 }
 
 async function cargarAuditoria() {
@@ -29,6 +51,8 @@ async function cargarAuditoria() {
 
         listaAuditoria = data || [];
 
+        renderizarKPIs();
+
         renderizarAuditoria();
 
     } catch (err) {
@@ -39,18 +63,46 @@ async function cargarAuditoria() {
 
 }
 
-function renderizarAuditoria() {
+function renderizarKPIs() {
+
+    document.getElementById("total-auditorias").textContent = listaAuditoria.length;
+
+    const diferencias = listaAuditoria.filter(r => r.discrepancia > 0).length;
+
+    document.getElementById("total-diferencias").textContent = diferencias;
+
+    const hoy = new Date().toLocaleDateString();
+
+    const auditoriasHoy = listaAuditoria.filter(r => {
+
+        return new Date(r.fecha_conteo).toLocaleDateString() === hoy;
+
+    }).length;
+
+    document.getElementById("auditorias-hoy").textContent = auditoriasHoy;
+
+}
+
+function renderizarAuditoria(busqueda = "") {
 
     const tbody = document.getElementById('tabla-seguridad');
 
     if (!tbody) return;
 
-    if (listaAuditoria.length === 0) {
+    const registros = listaAuditoria.filter(r => {
+
+        return r.vendedor_email.toLowerCase().includes(busqueda.toLowerCase()) ||
+
+            (r.productos?.nombre || "").toLowerCase().includes(busqueda.toLowerCase());
+
+    });
+
+    if (registros.length === 0) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" style="text-align:center;padding:30px;">
-                    No existen registros de auditoría.
+                <td colspan="8" style="text-align:center;padding:30px;">
+                    🔍 No se encontraron registros.
                 </td>
             </tr>
         `;
@@ -59,9 +111,36 @@ function renderizarAuditoria() {
 
     }
 
-    tbody.innerHTML = listaAuditoria.map(registro => {
+    tbody.innerHTML = registros.map(registro => {
 
         const fecha = new Date(registro.fecha_conteo);
+
+        const fechaTexto = fecha.toLocaleDateString('es-PE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        const horaTexto = fecha.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        let color = "#16a34a";
+        let estado = "🟢 Correcto";
+
+        if (registro.discrepancia > 5) {
+
+            color = "#dc2626";
+            estado = "🔴 Crítico";
+
+        } else if (registro.discrepancia > 0) {
+
+            color = "#d97706";
+            estado = "🟡 Revisar";
+
+        }
 
         return `
 
@@ -81,12 +160,23 @@ function renderizarAuditoria() {
                     ${registro.stock_contado}
                 </td>
 
-                <td style="text-align:center;font-weight:bold;">
+                <td style="
+                    text-align:center;
+                    font-weight:bold;
+                    color:${color};
+                ">
                     ${registro.discrepancia}
                 </td>
 
+                <td style="font-weight:600;">
+                    ${estado}
+                </td>
+
                 <td>
-                    ${fecha.toLocaleString()}
+                    ${fechaTexto}<br>
+                    <span style="color:#64748b;font-size:13px;">
+                        ${horaTexto}
+                    </span>
                 </td>
 
             </tr>
@@ -94,5 +184,25 @@ function renderizarAuditoria() {
         `;
 
     }).join("");
+
+}
+
+function mostrarConsejos() {
+
+    alert(`
+💡 RECOMENDACIONES DE SEGURIDAD
+
+✅ Realice conteos físicos al finalizar la jornada.
+
+✅ Revise diariamente los productos con diferencias de inventario.
+
+✅ Investigue inmediatamente las discrepancias superiores a 5 unidades.
+
+✅ Registre correctamente todas las ventas y compras.
+
+✅ Mantenga actualizado el stock del sistema.
+
+✅ Programe auditorías periódicas para prevenir pérdidas.
+`);
 
 }

@@ -5,6 +5,89 @@
         <p>Registro de auditorías realizadas por los vendedores.</p>
     </div>
 
+    <!-- Tarjetas KPI -->
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin:25px 0;">
+
+        <div style="
+            flex:1;
+            min-width:220px;
+            background:white;
+            border-radius:12px;
+            padding:22px;
+            border-left:5px solid #2563eb;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+        ">
+            <div style="font-size:34px;">🛡️</div>
+            <h2 id="total-auditorias" style="margin:8px 0;">0</h2>
+            <span style="color:#64748b;">Total Auditorías</span>
+        </div>
+
+        <div style="
+            flex:1;
+            min-width:220px;
+            background:white;
+            border-radius:12px;
+            padding:22px;
+            border-left:5px solid #dc2626;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+        ">
+            <div style="font-size:34px;">⚠️</div>
+            <h2 id="total-diferencias" style="margin:8px 0;">0</h2>
+            <span style="color:#64748b;">Diferencias Detectadas</span>
+        </div>
+
+        <div style="
+            flex:1;
+            min-width:220px;
+            background:white;
+            border-radius:12px;
+            padding:22px;
+            border-left:5px solid #16a34a;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+        ">
+            <div style="font-size:34px;">📅</div>
+            <h2 id="auditorias-hoy" style="margin:8px 0;">0</h2>
+            <span style="color:#64748b;">Auditorías Hoy</span>
+        </div>
+
+    </div>
+
+    <!-- Buscador -->
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:25px;">
+
+    <input
+        type="text"
+        id="buscar-seguridad"
+        placeholder="🔍 Buscar vendedor o producto..."
+        style="
+            width:100%;
+            max-width:420px;
+            padding:12px 16px;
+            border:1px solid #cbd5e1;
+            border-radius:8px;
+            font-size:15px;
+            background:white;
+        "
+    >
+
+    <button
+        id="btn-consejos"
+        style="
+            padding:12px 18px;
+            border:none;
+            border-radius:8px;
+            background:#2563eb;
+            color:white;
+            font-weight:600;
+            cursor:pointer;
+        "
+    >
+        💡 Consejos de Seguridad
+    </button>
+
+</div>
+
+    <!-- Tabla -->
     <div class="carrito-box" style="padding:15px;overflow-x:auto;">
 
         <table style="width:100%;">
@@ -18,6 +101,7 @@
                     <th>Stock Sistema</th>
                     <th>Stock Contado</th>
                     <th>Diferencia</th>
+                    <th>Estado</th>
                     <th>Fecha</th>
                 </tr>
 
@@ -26,9 +110,11 @@
             <tbody id="tabla-seguridad">
 
                 <tr>
-                    <td colspan="7" style="text-align:center;padding:30px;">
-                        ⏳ Cargando auditoría...
+
+                    <td colspan="8" style="text-align:center;padding:30px;">
+                        ⏳ Cargando auditorías...
                     </td>
+
                 </tr>
 
             </tbody>
