@@ -29,10 +29,13 @@
 }
 
 .buscador-productos input {
-  width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  margin-top: 10px;
+    width: 100%;
+    max-width: 750px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
 }
 
 .resultado-producto {
@@ -72,4 +75,91 @@
 .info-card h3 {
     margin: 0;
     font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   DASHBOARD DEL VENDEDOR
+   ========================================================================== */
+
+.dashboard-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin: 35px 0;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transition: all .2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,.10);
+}
+
+.dashboard-card .icono {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.dashboard-card h3 {
+    font-size: 2rem;
+    margin: 0;
+    color: #1e293b;
+}
+
+.dashboard-card p {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: .95rem;
+    font-weight: 500;
+}
+
+/* ===============================
+   Últimas ventas
+================================ */
+
+.ultimas-ventas{
+
+    margin-top:40px;
+
+}
+
+.tabla-dashboard{
+
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+
+}
+
+.tabla-dashboard th{
+
+    background:#2563eb;
+    color:white;
+    padding:14px;
+    text-align:left;
+
+}
+
+.tabla-dashboard td{
+
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.tabla-dashboard tr:hover{
+
+    background:#f8fafc;
+
 }
