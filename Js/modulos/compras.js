@@ -57,11 +57,12 @@ function configurarEventosCompras() {
                     const { error: errU } = await supabaseClient
                         .from('productos')
                         .update({
-                            nombre, 
-                            marca: marca || null, 
+                            nombre,
+                            marca: marca || null,
                             categoria,
                             stock_actual: nuevoStock,
                             precio_venta: precioVenta,
+                            precio_costo: precioCosto,
                             stock_minimo_alerta: stockMinimo
                         })
                         .eq('id', productoIdFinal);
@@ -74,6 +75,7 @@ function configurarEventosCompras() {
                         categoria,
                         stock_actual: cantidadComprada,
                         precio_venta: precioVenta,
+                        precio_costo: precioCosto,
                         stock_minimo_alerta: stockMinimo
                     };
 
@@ -108,6 +110,7 @@ function configurarEventosCompras() {
                 alert(`💾 ¡Operación Exitosa!\nEl producto e historial de compra se sincronizaron correctamente.`);
                 formCompra.reset();
                 document.getElementById('compra-minimo').value = 10;
+                window.dispatchEvent(new CustomEvent('dashboard:refresh'));
 
             } catch (err) {
                 alert(`❌ Error al procesar:\n${err.message || 'Verifica las columnas.'}`);
